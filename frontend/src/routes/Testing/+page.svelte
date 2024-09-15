@@ -1,11 +1,11 @@
 <script>    
-    import Navbar from '$lib/navbar.svelte';
+    // import Navbar from '$lib/navbar.svelte';
     import CircularProgress from '../../lib/CircularProgress.svelte'; // Import any components needed for the testing page
-    import TestResults from '../../lib/TestResults.svelte'; 
-    import ScheduleAttacks from '../../lib/ScheduleAttacks.svelte'; 
+    import ScheduleAttacks from '../../lib/ScheduleAttacks.svelte';
     import Summary from '../../lib/Summary.svelte';
+    import TestResults from '../../lib/TestResults.svelte';
 </script>
-<Navbar />
+<!-- <Navbar /> -->
 <CircularProgress />
 <TestResults />
 <ScheduleAttacks />
