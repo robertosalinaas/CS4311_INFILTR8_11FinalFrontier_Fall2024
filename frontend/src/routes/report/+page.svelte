@@ -1,4 +1,7 @@
 <script>
+  export let isOpen = true;
+  import Navbar from '$lib/navbar.svelte';
+
   let exportFormats = ['PDF', 'CSV', 'Excel'];
   let selectedFormat = 'PDF';
 
@@ -15,6 +18,17 @@
 </script>
 
 <style>
+  main {
+    transition: margin-left 0.3s ease;
+  }
+
+  .main-collapsed {
+    margin-left: 0;
+  }
+
+  .main-expanded {
+    margin-left: 250px; /* Adjust this width based on your navbar width */
+  }
   body {
     margin: 0;
     padding: 0;
@@ -97,7 +111,7 @@
   }
 </style>
 
-<div class="wrapper">
+<div class="{isOpen ? 'main-expanded' : 'main-collapsed'} wrapper">
   <h1>Reports</h1> <!-- Main title outside the report container -->
   
   <div class="report-container">
