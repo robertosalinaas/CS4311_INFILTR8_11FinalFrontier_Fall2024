@@ -17,6 +17,8 @@
   }
 </script>
 
+<Navbar bind:isOpen />
+
 <style>
   main {
     transition: margin-left 0.3s ease;
@@ -111,7 +113,7 @@
   }
 </style>
 
-<div class="{isOpen ? 'main-expanded' : 'main-collapsed'} wrapper">
+<main class="{isOpen ? 'main-expanded' : 'main-collapsed'} wrapper">
   <h1>Reports</h1> <!-- Main title outside the report container -->
   
   <div class="report-container">
@@ -145,4 +147,4 @@
 
     <button class="export-button" on:click={handleExport}>Export</button>
   </div>
-</div>
+</main>
