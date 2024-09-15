@@ -1,7 +1,11 @@
 <script lang="ts">
+    export let isOpen = true;
+    
+    import Navbar from '$lib/navbar.svelte';
     import { dndzone } from 'svelte-dnd-action';
     import { flip } from 'svelte/animate';
     import { cubicOut } from 'svelte/easing';
+
   
     const flipDurationMS = 300;
   
@@ -143,10 +147,24 @@
     let folderIconSrc = "https://cdn.builder.io/api/v1/image/assets/TEMP/bd5f3ae2fb45d029aa12a06c1bac426e682908ad489f1f444bcb1ee1a84a5cf3?placeholderIfAbsent=true&apiKey=2e556ccd119247e0ab85e312accfd79c";
     let arrorIconSrc = "https://cdn.builder.io/api/v1/image/assets/TEMP/44108f81ceaa218666ee8493a94a51cb92183cc4e709837f56b6b45348e16b4b?placeholderIfAbsent=true&apiKey=2e556ccd119247e0ab85e312accfd79c";
   </script>
+
+<style>
+  main {
+    transition: margin-left 0.3s ease;
+  }
+
+  .main-collapsed {
+    margin-left: 0;
+  }
+
+  .main-expanded {
+    margin-left: 250px; /* Adjust this width based on your navbar width */
+  }
+</style>
   
+  <Navbar bind:isOpen />
   
-  
-  <main class="relative flex flex-col md:flex-row p-6 bg-slate-50 min-h-screen">
+  <main class="{isOpen ? 'main-expanded' : 'main-collapsed'} relative flex flex-col md:flex-row p-6 bg-slate-50 min-h-screen">
     <!-- Left Section (Project Folders and Exploits) -->
     <div class="flex flex-col w-full md:w-3/4 p-4 space-y-8">
       

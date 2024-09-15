@@ -1,5 +1,6 @@
 <script>
-    let isOpen = true;
+    import { goto } from '$app/navigation';
+    export let isOpen = true;
   
     function toggleNavbar() {
       isOpen = !isOpen;
@@ -20,6 +21,7 @@
       justify-content: space-between;
       transition: transform 0.3s ease;
       box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+      z-index: 1000; /* Ensure the navbar stays on top */
     }
   
     .navbar.closed {
@@ -78,7 +80,7 @@
     <div class="INFILTR8">INFILTR8</div>
     <div class="nav-buttons">
       <button>Dashboard</button>
-      <button>Project Manager</button>
+      <button on:click={() => goto('./project')}>Project Manager</button>
       <button>Testing</button>
       <button>Reports</button>
     </div>
