@@ -32,6 +32,7 @@
 
     <!-- Schedule Attacks Section (spans full width) -->
     <div class="schedule bg-gray-100 p-5 rounded-lg col-span-1 md:col-span-3 shadow-md">
+        <p class="text-lg font-bold text-center mb-5">Schedule Attacks</p>
       <ScheduleAttacks />
     </div>
 
