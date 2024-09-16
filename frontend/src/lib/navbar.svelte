@@ -81,7 +81,7 @@
     <div class="nav-buttons">
       <button>Dashboard</button>
       <button on:click={() => goto('./project')}>Project Manager</button>
-      <button>Testing</button>
+      <button on:click={() => goto('./Testing')}>Testing</button>
       <button on:click={() => goto('./report')}>Reports</button>
     </div>
     <div class="bottom-buttons">
