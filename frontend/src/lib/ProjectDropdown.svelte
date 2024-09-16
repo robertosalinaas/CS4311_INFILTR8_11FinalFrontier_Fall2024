@@ -3,7 +3,7 @@
   let selectedProject = "Project 1";
 </script>
 
-<div class="dropdown">
+<div class="dropdown w-auto">
   <select bind:value={selectedProject}>
     {#each projects as project}
       <option value={project}>{project}</option>

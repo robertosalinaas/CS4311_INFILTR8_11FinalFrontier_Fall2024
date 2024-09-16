@@ -42,7 +42,7 @@
     x="50"
     y="50"
     class="fill-purple-600 font-bold"
-    font-size="{size * 0.2}"
+    font-size="{size * 0.18}"
     dominant-baseline="middle"
     text-anchor="middle"
   >

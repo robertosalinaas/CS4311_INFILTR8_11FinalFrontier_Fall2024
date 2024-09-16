@@ -16,7 +16,7 @@
     padding: 20px;
     border-radius: 10px;
     color: white; 
-    height: 300px;
+    height: 100%;
     overflow-y: auto;
   }
 
