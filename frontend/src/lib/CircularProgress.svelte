@@ -1,47 +1,51 @@
-<script lang="ts">
-  export let value = 68; // Default value
+<script>
+  export let progress = 68;
+  export let size = 150;  // Default size
+  export let stroke = 8;  // Default stroke width
+  const radius = 50 - stroke / 2;  // Adjust the radius based on stroke width
+  const circumference = 2 * Math.PI * radius;  // Calculate the circumference
+  const offset = ((100 - progress) / 100) * circumference;  // Calculate the offset for the progress
 </script>
 
-<svg viewBox="0 0 36 36" class="circular-chart">
-  <path
-    class="circle-bg"
-    d="M18 2.0845
-       a 15.9155 15.9155 0 0 1 0 31.831
-       a 15.9155 15.9155 0 0 1 0 -31.831"
+<svg
+  width="{size}"
+  height="{size}"
+  viewBox="0 0 100 100"
+  xmlns="http://www.w3.org/2000/svg"
+>
+  <!-- Background circle -->
+  <circle
+    cx="50"
+    cy="50"
+    r="{radius}"
+    fill="none"
+    stroke="lightgray"
+    stroke-width="{stroke}"
   />
-  <path
-    class="circle"
-    stroke-dasharray="{value}, 100"
-    d="M18 2.0845
-       a 15.9155 15.9155 0 0 1 0 31.831
-       a 15.9155 15.9155 0 0 1 0 -31.831"
+  
+  <!-- Progress circle -->
+  <circle
+    cx="50"
+    cy="50"
+    r="{radius}"
+    fill="none"
+    stroke="purple"
+    stroke-width="{stroke}"
+    stroke-dasharray="{circumference} {circumference}"
+    stroke-dashoffset="{offset}"
+    stroke-linecap="round"
+    transform="rotate(-90 50 50)"
   />
-  <text x="18" y="20.35" class="percentage">{value}%</text>
+  
+  <!-- Percentage Text -->
+  <text
+    x="50"
+    y="50"
+    class="fill-purple-600 font-bold"
+    font-size="{size * 0.2}"
+    dominant-baseline="middle"
+    text-anchor="middle"
+  >
+    {progress}%
+  </text>
 </svg>
-
-<style>
-  .circular-chart {
-    max-width: 80px; 
-    max-height: 80px;
-  }
-
-  .circle-bg {
-    fill: none;
-    stroke: #34495e; 
-    stroke-width: 3.8;
-  }
-
-  .circle {
-    fill: none;
-    stroke-width: 2.8;
-    stroke: #1abc9c; 
-    stroke-linecap: round;
-    animation: progress 1s ease-out forwards;
-  }
-
-  .percentage {
-    font-size: 0.5em; 
-    text-anchor: middle;
-    fill: #ecf0f1; 
-  }
-</style>
