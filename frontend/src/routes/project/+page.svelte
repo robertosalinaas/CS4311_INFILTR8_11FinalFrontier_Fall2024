@@ -1,4 +1,6 @@
 <script lang="ts">
+  import { goto } from '$app/navigation';
+
     export let isOpen = true;
     
     import Navbar from '$lib/navbar.svelte';
@@ -164,7 +166,7 @@
   
   <Navbar bind:isOpen />
   
-  <main class="{isOpen ? 'main-expanded' : 'main-collapsed'} relative flex flex-col md:flex-row p-6 bg-slate-50 min-h-screen">
+  <main class="{isOpen ? 'main-expanded' : 'main-collapsed'}  flex flex-col md:flex-row p-6 bg-slate-50 min-h-screen">
     <!-- Left Section (Project Folders and Exploits) -->
     <div class="flex flex-col w-full md:w-3/4 p-4 space-y-8">
       
@@ -304,12 +306,13 @@
       
   
       <!-- Start Testing Button -->
+      <div class="bottom-0 inset-x-0 flex justify-center mt-10 p-6 w-full ">
+        <button on:click={() => goto('./Testing')} class="bg-teal-600 text-white px-6 py-3 rounded-md hover:bg-teal-700">Start Testing</button>
+      </div>
       
     </div>
 
-    <div class="absolute bottom-0 inset-x-0 flex justify-center mt-10 p-6 w-full ">
-      <button class="bg-teal-600 text-white px-6 py-3 rounded-md hover:bg-teal-700">Start Testing</button>
-    </div>
+    
   
     <!-- Right Sidebar (Load Project) -->
     <aside class="w-full md:w-1/4 p-4 bg-gray-50 overflow-y-auto">
