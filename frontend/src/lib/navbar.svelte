@@ -79,7 +79,7 @@
   <nav class:closed={!isOpen} class="navbar">
     <div class="INFILTR8">INFILTR8</div>
     <div class="nav-buttons">
-      <button>Dashboard</button>
+      <button on:click={() => goto('/dashboard')}>Dashboard</button>
       <button on:click={() => goto('./project')}>Project Manager</button>
       <button on:click={() => goto('./Testing')}>Testing</button>
       <button on:click={() => goto('./report')}>Reports</button>
