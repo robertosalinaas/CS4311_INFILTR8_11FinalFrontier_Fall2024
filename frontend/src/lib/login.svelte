@@ -12,18 +12,6 @@
   </script>
   
   <style>
-    
-    body {
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-      background: #2e8b57; /* Green forest color */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      overflow: hidden;
-    }
   
     .login-container {
       background: rgba(38, 92, 145, 0.8);
