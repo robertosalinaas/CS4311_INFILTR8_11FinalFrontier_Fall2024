@@ -8,9 +8,27 @@
   ];
 </script>
 
-<div class="test-results text-black mb-5">
+<div class="test-results">
   {#each tests as test}
-    <p>{test.name}</p>
-    <ProgressBar value={test.score} />
+    <div class="test-item">
+      <p>{test.name}</p>
+      <ProgressBar value={test.score} />
+    </div>
   {/each}
 </div>
+
+<style>
+  .test-results {
+    margin-bottom: 20px;
+  }
+
+  .test-item {
+    margin-bottom: 10px;
+  }
+
+  p {
+    margin: 0;
+    font-weight: bold;
+    color: #34495e;
+  }
+</style>

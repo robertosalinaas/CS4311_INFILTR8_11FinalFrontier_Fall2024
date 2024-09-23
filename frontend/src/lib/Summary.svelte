@@ -12,21 +12,22 @@
 
 <style>
   .summary {
-    background-color: #34495e; 
-    padding: 20px;
+    background-color: #34495e;
+    padding: 10px;
     border-radius: 10px;
-    color: white; 
+    color: white;
     height: 100%;
     overflow-y: auto;
+    margin-bottom: 10px;
   }
 
   .status-list p {
     margin: 0;
-    padding: 10px 0;
+    padding: 5px 0;
   }
 
   hr {
     border: none;
-    border-top: 1px solid #1abc9c; 
+    border-top: 1px solid #6a4fd8;
   }
 </style>

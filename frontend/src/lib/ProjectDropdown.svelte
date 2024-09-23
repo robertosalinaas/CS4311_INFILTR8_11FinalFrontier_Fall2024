@@ -24,6 +24,6 @@
   }
 
   .dropdown select:hover {
-    background-color: #1abc9c; 
+    background-color: #6a4fd8; /* Updated hover color to match purple */
   }
 </style>

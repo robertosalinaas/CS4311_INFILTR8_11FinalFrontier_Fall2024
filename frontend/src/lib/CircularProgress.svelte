@@ -1,10 +1,10 @@
 <script>
   export let progress = 68;
-  export let size = 150;  // Default size
-  export let stroke = 8;  // Default stroke width
-  const radius = 50 - stroke / 2;  // Adjust the radius based on stroke width
-  const circumference = 2 * Math.PI * radius;  // Calculate the circumference
-  const offset = ((100 - progress) / 100) * circumference;  // Calculate the offset for the progress
+  export let size = 150;
+  export let stroke = 8;
+  const radius = 50 - stroke / 2;
+  const circumference = 2 * Math.PI * radius;
+  const offset = ((100 - progress) / 100) * circumference;
 </script>
 
 <svg
@@ -19,7 +19,7 @@
     cy="50"
     r="{radius}"
     fill="none"
-    stroke="lightgray"
+    stroke="#e5e5e5"
     stroke-width="{stroke}"
   />
   
@@ -29,7 +29,7 @@
     cy="50"
     r="{radius}"
     fill="none"
-    stroke="purple"
+    stroke="#6a4fd8"
     stroke-width="{stroke}"
     stroke-dasharray="{circumference} {circumference}"
     stroke-dashoffset="{offset}"
@@ -41,11 +41,18 @@
   <text
     x="50"
     y="50"
-    class="fill-purple-600 font-bold"
-    font-size="{size * 0.18}"
+    fill="#6a4fd8"
+    font-weight="bold"
+    font-size="{size * 0.2}"
     dominant-baseline="middle"
     text-anchor="middle"
   >
     {progress}%
   </text>
 </svg>
+
+<style>
+  svg {
+    margin-bottom: 20px; /* Adjust spacing */
+  }
+</style>
