@@ -83,6 +83,8 @@
       <button on:click={() => goto('./project')}>Project Manager</button>
       <button on:click={() => goto('./Testing')}>Testing</button>
       <button on:click={() => goto('./report')}>Reports</button>
+      <button on:click={() => goto('./allowedandlimitsIPList')}>AllowIP & Off-LimitIP</button>
+      <button on:click={() => goto('./process_nessus')}>Process Recon Data</button>
     </div>
     <div class="bottom-buttons">
       <button on:click={() => goto('/settings')}>Settings</button>
