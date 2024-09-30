@@ -2,7 +2,7 @@
   export let isOpen = true;
   import Navbar from '$lib/navbar.svelte';
 
-  let exportFormats = ['PDF', 'CSV', 'Excel'];
+  let exportFormats = ['PDF', 'XML'];
   let selectedFormat = 'PDF';
 
   // Sample data for the summary table

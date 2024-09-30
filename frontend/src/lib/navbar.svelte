@@ -88,7 +88,7 @@
     </div>
     <div class="bottom-buttons">
       <button on:click={() => goto('/settings')}>Settings</button>
-      <button>Supports</button>
+      <button on:click={() => goto('/support')}>Supports</button>
     </div>
     <button class="toggle-button" on:click={toggleNavbar}>
       {isOpen ? '×' : '☰'}

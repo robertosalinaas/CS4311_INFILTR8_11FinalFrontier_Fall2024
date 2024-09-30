@@ -1,4 +1,5 @@
 <script>
+
   import Navbar from '$lib/navbar.svelte';
   
   let isOpen = true; // For controlling the Navbar state
