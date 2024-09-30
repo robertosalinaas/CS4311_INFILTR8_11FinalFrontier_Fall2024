@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Neo4j Data</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <h1>Neo4j Data</h1>
+    <h2>Movies</h2>
+    <table>
+        <tr>
+            <th>Title</th>
+        </tr>
+        <% movies.forEach(function(movie) { %>
+            <tr>
+                <td><%= movie.title %></td>
+            </tr>
+        <% }); %>
+    </table>
+
+    <h2>Actors</h2>
+    <table>
+        <tr>
+            <th>Name</th>
+        </tr>
+        <% actors.forEach(function(actor) { %>
+            <tr>
+                <td><%= actor.name %></td>
+            </tr>
+        <% }); %>
+    </table>
+</body>
+</html>
