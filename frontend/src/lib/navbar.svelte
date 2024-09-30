@@ -81,7 +81,7 @@
     <div class="nav-buttons">
       <button on:click={() => goto('/dashboard')}>Dashboard</button>
       <button on:click={() => goto('./project')}>Project Manager</button>
-      <button on:click={() => goto('./Testing')}>Testing</button>
+      <button on:click={() => goto('./Testing')}>Analysis</button>
       <button on:click={() => goto('./report')}>Reports</button>
       <button on:click={() => goto('./allowedandlimitsIPList')}>AllowIP & Off-LimitIP</button>
       <button on:click={() => goto('./process_nessus')}>Process Recon Data</button>
