@@ -7,7 +7,18 @@ INFILTR8 is a cybersecurity tool designed to facilitate and expedite penetration
 ##  System Requirements:
 - *Operating System*: Kali Linux
 - *Hardware*: Minimum of 4GB RAM, 4-core 2.5GHz CPU, 20GB available storage
-- *Software*: Chrome or Firefox 
+- *Software*: Chrome or Firefox
+
+## Frameworks and Libraries Used
+- **Svelte**: A modern framework for building user interfaces.
+- **SvelteKit**: Framework for building Svelte applications with routing and server-side rendering.
+- **Tailwind CSS**: Utility-first CSS framework for styling.
+- **TypeScript**: For type safety in JavaScript.
+- **Vite**: Fast build tool and development server.
+- **PostCSS**: Tool for transforming CSS with plugins.
+- **Autoprefixer**: Adds vendor prefixes for better browser compatibility.
+- **Svelte Check**: Tool for checking Svelte code for errors.
+- **NeoConfetti Svelte**: A library/plugin for effects in Svelte applications (if applicable).
 
 ## How to Use INFILTR8
 1. *Login*: Enter your credentials on the login page.
