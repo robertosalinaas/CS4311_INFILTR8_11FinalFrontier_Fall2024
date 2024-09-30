@@ -41,22 +41,24 @@ INFILTR8 is a cybersecurity tool designed to facilitate and expedite penetration
 git clone https://github.com/your-username/INFILTR8.git
 ```
 
-2.	Navigate to the frontend directory:
+*OPTIONAL:*
+
+Navigate to the frontend directory:
 ```
 cd frontend
 ```
 
-3.	Install dependencies:
+2.	Install dependencies:
 ```
 npm install
 ```
 
-4. Start the development server:
+3. Start the development server:
 ```
 npm run dev
 ```
 
-5. This app will run locally (ex: `http://localhost:3000/`)
+4. This app will run locally (ex: `http://localhost:3000/`)
 
 
 ## Contributions
