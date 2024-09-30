@@ -59,8 +59,6 @@
 
       // Update the current project to the selected one
       currentProject = selectedProject;
-
-      console.log("i am here")
     }
     // Function to add the new IP
     function submitNewIp() {
