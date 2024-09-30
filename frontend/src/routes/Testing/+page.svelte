@@ -1,120 +1,53 @@
 <script>
-    let isOpen = true;
-
-    function toggleNavbar() {
-        isOpen = !isOpen;
-    }
-
+    export let isOpen = true;
+    import Navbar from '$lib/navbar.svelte';
+    import {goto} from '$app/navigation';
+  
     // Import the components needed for the testing page
     import CircularProgress from '../../lib/CircularProgress.svelte';
     import ScheduleAttacks from '../../lib/ScheduleAttacks.svelte';
     import Summary from '../../lib/Summary.svelte';
     import TestResults from '../../lib/TestResults.svelte';
+    import ProjectDropdown from '../../lib/ProjectDropdown.svelte';
 </script>
 
-<style>
-    .navbar {
-        position: fixed;
-        top: 0;
-        left: 0;
-        height: 100%;
-        width: 250px;
-        background-color: #2c3e50;
-        color: white;
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-        transition: transform 0.3s ease;
-        box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
-    }
+<Navbar bind:isOpen />
 
-    .navbar.closed {
-        transform: translateX(-100%);
-    }
+<!-- Main page content with refined grid and spacing -->
+<main class="{isOpen ? 'ml-64' : 'ml-0'} flex flex-col gap-5 p-8 md:grid-cols-[2fr_3fr_1fr] md:gap-8 md:p-12">
 
-    .INFILTR8 {
-        padding: 1.5rem;
-        font-size: 1.8rem;
-        font-weight: bold;
-        text-align: center;
-        background-color: #34495e;
-    }
-
-    .nav-buttons,
-    .bottom-buttons {
-        display: flex;
-        flex-direction: column;
-        padding: 1rem;
-    }
-
-    .nav-buttons button,
-    .bottom-buttons button {
-        margin: 0.5rem 0;
-        padding: 0.75rem;
-        background-color: #34495e;
-        color: white;
-        border: none;
-        cursor: pointer;
-        border-radius: 4px;
-        transition: background-color 0.3s ease;
-    }
-
-    .nav-buttons button:hover,
-    .bottom-buttons button:hover {
-        background-color: #1abc9c;
-    }
-
-    .toggle-button {
-        position: absolute;
-        top: 1rem;
-        right: -2.5rem;
-        background-color: #2c3e50;
-        color: white;
-        border: none;
-        cursor: pointer;
-        padding: 0.5rem;
-        border-radius: 50%;
-        box-shadow: 0 0 5px rgba(0, 0, 0, 0.2);
-        transition: background-color 0.3s ease;
-    }
-
-    .toggle-button:hover {
-        background-color: #1abc9c;
-    }
-
-    /* Adjust main content to avoid overlap */
-    main {
-        margin-left: 250px;
-        padding: 1rem;
-    }
-
-    .navbar.closed + main {
-        margin-left: 0;
-    }
-</style>
-
-<!-- Sidebar code -->
-<nav class:closed={!isOpen} class="navbar">
-    <div class="INFILTR8">INFILTR8</div>
-    <div class="nav-buttons">
-        <button>Dashboard</button>
-        <button>Project Manager</button>
-        <button>Testing</button>
-        <button>Reports</button>
+    <!-- Project Dropdown Section -->
+    <h2 class="text-3xl font-semibold mb-4">Testing</h2>
+    <div class="project-dropdown max-w-[300px]">
+      <ProjectDropdown />
     </div>
-    <div class="bottom-buttons">
-        <button>Settings</button>
-        <button>Supports</button>
+
+    <div class="summary p-5 rounded-lg flex flex-col justify-center max-w-[400px] max-h-[521px]">
+        <Summary />
+      </div>
+
+    <!-- Test Results Section -->
+    <div class="tests bg-gray-100 p-5 rounded-lg shadow-md flex flex-col justify-center max-w-[500px]">
+      <TestResults />
     </div>
-    <button class="toggle-button" on:click={toggleNavbar}>
-        {isOpen ? '×' : '☰'}
+
+    <!-- Circular Progress Section -->
+    <div class="circular-progress absolute pt-10 pr-10 top-0 right-0 rounded-full  flex justify-center items-center">
+      <CircularProgress progress={68} size={170} stroke={8} />
+    </div>
+
+    <!-- Schedule Attacks Section -->
+    <div class="schedule bg-gray-100 p-5 rounded-lg col-span-1  shadow-md">
+        <p class="text-lg font-bold text-center mb-5">Schedule Attacks</p>
+      <ScheduleAttacks />
+    </div>
+
+    <!-- View Results Button -->
+    <button on:click={() => goto('./report')}  class="view-results inset-x-0 bg-blue-500 hover:bg-blue-700 text-white  py-4 px-6 rounded-md mx-auto  text-md shadow-md transition ease-in-out duration-300">
+      View Results
     </button>
-</nav>
-
-<!-- Main page content -->
-<main>
-    <CircularProgress />
-    <TestResults />
-    <ScheduleAttacks />
-    <Summary />
 </main>
+
+<style>
+  /* Extra Tailwind classes have been applied for layout and design improvements */
+</style>
