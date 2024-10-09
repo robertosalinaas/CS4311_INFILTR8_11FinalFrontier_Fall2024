@@ -120,18 +120,18 @@
 
 <Navbar bind:isOpen />
 
-<main class="{isOpen ? 'main-expanded' : 'main-collapsed'} bg-gray-100 min-h-screen transition-all duration-300">
+<main class="{isOpen ? 'main-expanded' : 'main-collapsed'} bg-gray-100 dark:bg-gray-900 min-h-screen transition-all duration-300">
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 lg:gap-8 p-4 lg:p-8">
     <!-- Left section -->
     <div>
-      <h1 class="text-3xl font-bold mb-6 text-gray-800">Allowed & Off-limits IP List</h1>
+      <h1 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">Allowed & Off-limits IP List</h1>
 
-      <div class="bg-white p-6 rounded-md shadow-md mb-8">
-        <h2 class="text-xl font-bold mb-4 text-gray-700">Select or Create Project</h2>
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-md shadow-md mb-8">
+        <h2 class="text-xl font-bold mb-4 text-gray-700 dark:text-gray-100">Select or Create Project</h2>
         <div class="flex flex-col md:flex-row gap-4">
           <select 
             bind:value={selectedProject} 
-            class="p-2 border rounded-md flex-grow focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="p-2 border rounded-md flex-grow focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
           >
             <option value="">Select a project</option>
             {#each projects as project}
@@ -143,11 +143,11 @@
               type="text" 
               bind:value={newProjectName} 
               placeholder="New project name" 
-              class="p-2 border rounded-md flex-grow focus:outline-none focus:ring-2 focus:ring-blue-500"
+              class="p-2 border rounded-md flex-grow focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
             />
             <button 
               on:click={createProject} 
-              class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors"
+              class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors dark:bg-blue-600 dark:hover:bg-blue-700"
             >
               Create
             </button>
@@ -159,66 +159,66 @@
     <!-- Right section -->
     <div class="mt-6 lg:mt-0">
       {#if selectedProject}
-        <div class="bg-white p-6 rounded-md shadow-md mb-8">
-          <h2 class="text-xl font-bold mb-4 text-gray-700">Manage IPs for {selectedProject}</h2>
+        <div class="bg-white dark:bg-gray-800 p-6 rounded-md shadow-md mb-8">
+          <h2 class="text-xl font-bold mb-4 text-gray-700 dark:text-gray-100">Manage IPs for {selectedProject}</h2>
           <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
             <!-- Allowed IPs -->
             <div>
-              <h3 class="text-lg font-semibold mb-2 text-gray-700">Allowed IPs</h3>
+              <h3 class="text-lg font-semibold mb-2 text-gray-700 dark:text-gray-100">Allowed IPs</h3>
               <div class="flex gap-2 mb-4">
                 <input 
                   type="text" 
                   bind:value={allowedIP} 
                   placeholder="Enter allowed IP" 
-                  class="p-2 border rounded-md flex-grow focus:outline-none focus:ring-2 focus:ring-red-500"
+                  class="p-2 border rounded-md flex-grow focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
                 />
                 <button 
                   on:click={addAllowedIP} 
-                  class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+                  class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors dark:bg-red-600 dark:hover:bg-red-700"
                 >
                   Add
                 </button>
               </div>
-              <ul class="list-disc pl-5 text-sm text-gray-600">
+              <ul class="list-disc pl-5 text-sm text-gray-600 dark:text-gray-300">
                 {#each allowedIPs as ip}
                   <li>{ip}</li>
                 {/each}
               </ul>
               {#if allowedIPs.length === 0}
-                <p class="text-sm text-gray-500">No allowed IPs added yet.</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">No allowed IPs added yet.</p>
               {/if}
             </div>
 
             <!-- Off-limit IPs -->
             <div>
-              <h3 class="text-lg font-semibold mb-2 text-gray-700">Off-limit IPs</h3>
+              <h3 class="text-lg font-semibold mb-2 text-gray-700 dark:text-gray-100">Off-limit IPs</h3>
               <div class="flex gap-2 mb-4">
                 <input 
                   type="text" 
                   bind:value={offLimitIP} 
                   placeholder="Enter off-limit IP" 
-                  class="p-2 border rounded-md flex-grow focus:outline-none focus:ring-2 focus:ring-red-500"
+                  class="p-2 border rounded-md flex-grow focus:outline-none focus:ring-2 focus:ring-red-500 dark:bg-gray-700 dark:border-gray-600 dark:text-gray-100"
                 />
                 <button 
                   on:click={addOffLimitIP} 
-                  class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors"
+                  class="px-4 py-2 bg-red-500 text-white rounded-md hover:bg-red-600 transition-colors dark:bg-red-600 dark:hover:bg-red-700"
                 >
                   Add
                 </button>
               </div>
-              <ul class="list-disc pl-5 text-sm text-gray-600">
+              <ul class="list-disc pl-5 text-sm text-gray-600 dark:text-gray-300">
                 {#each offLimitIPs as ip}
                   <li>{ip}</li>
                 {/each}
               </ul>
               {#if offLimitIPs.length === 0}
-                <p class="text-sm text-gray-500">No off-limit IPs added yet.</p>
+                <p class="text-sm text-gray-500 dark:text-gray-400">No off-limit IPs added yet.</p>
               {/if}
             </div>
           </div>
         </div>
       {:else}
-        <p class="text-lg text-gray-600">Please select or create a project to manage IPs.</p>
+        <p class="text-lg text-gray-600 dark:text-gray-400">Please select or create a project to manage IPs.</p>
       {/if}
     </div>
   </div>
@@ -243,5 +243,3 @@
     }
   }
 </style>
-
-
