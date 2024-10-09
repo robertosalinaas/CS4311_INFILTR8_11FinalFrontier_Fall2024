@@ -1,3 +1,32 @@
+/* app.css */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Custom Dark Mode Styles */
+:root.dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(26, 32, 44, var(--tw-bg-opacity)); /* Dark background */
+  --tw-text-opacity: 1;
+  color: rgba(203, 213, 224, var(--tw-text-opacity)); /* Light text in dark mode */
+}
+
+:root.dark .bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgba(45, 55, 72, var(--tw-bg-opacity)); /* Darker background for white elements */
+}
+
+:root.dark .text-gray-700 {
+  --tw-text-opacity: 1;
+  color: rgba(226, 232, 240, var(--tw-text-opacity)); /* Lighter text in dark mode */
+}
+
+:root.dark .border-gray-300 {
+  --tw-border-opacity: 1;
+  border-color: rgba(74, 85, 104, var(--tw-border-opacity)); /* Darker border in dark mode */
+}
+
+:root.dark button {
+  background-color: #4a5568; /* Darker button background */
+  color: white; /* White text for buttons in dark mode */
+}
