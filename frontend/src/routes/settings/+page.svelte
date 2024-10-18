@@ -11,16 +11,22 @@
 
   // Default settings for reset
   const defaultSettings = {
-      colorMode: 'normal',
-      textSize: 'medium',
-      darkMode: 'off',
+    colorMode: 'normal',
+    textSize: 'medium',
+    darkMode: 'off',
   };
 
   // Apply the changes (dark mode, color mode, and text size)
   function applyChanges() {
+    // Apply changes after clicking "Apply"
     applyColorMode();
     applyTextSize();
     applyDarkMode();
+
+    // Save the settings to localStorage
+    localStorage.setItem('colorMode', colorMode);
+    localStorage.setItem('textSize', textSize);
+    localStorage.setItem('darkMode', darkMode);
   }
 
   // Reset to default settings
@@ -31,22 +37,30 @@
     applyChanges();
   }
 
-  // Persist the dark mode setting and other changes when mounted
+  // Persist settings and reapply them when mounted
   onMount(() => {
-      // Retrieve saved dark mode setting from localStorage
-      const savedDarkMode = localStorage.getItem('darkMode');
-      if (savedDarkMode) {
-          darkMode = savedDarkMode;
-          applyDarkMode();
-      }
+    // Retrieve saved settings from localStorage
+    const savedColorMode = localStorage.getItem('colorMode');
+    const savedTextSize = localStorage.getItem('textSize');
+    const savedDarkMode = localStorage.getItem('darkMode');
 
-      // Apply the initial settings for color mode and text size
-      applyChanges();
+    // Apply saved settings if available
+    if (savedColorMode) colorMode = savedColorMode;
+    if (savedTextSize) textSize = savedTextSize;
+    if (savedDarkMode) darkMode = savedDarkMode;
+
+    applyChanges(); // Apply settings on mount
   });
 
   // Apply color blindness modes
   function applyColorMode() {
-    document.documentElement.classList.remove('color-normal', 'color-grayscale');
+    document.documentElement.classList.remove(
+      'color-normal', 
+      'color-grayscale', 
+      'color-deuteranopia', 
+      'color-protanopia', 
+      'color-tritanopia'
+    );
     document.documentElement.classList.add(`color-${colorMode}`);
   }
 
@@ -60,12 +74,13 @@
   function applyDarkMode() {
     if (darkMode === 'on') {
       document.documentElement.classList.add('dark');
-      localStorage.setItem('darkMode', 'on');  // Save the preference to localStorage
     } else {
       document.documentElement.classList.remove('dark');
-      localStorage.setItem('darkMode', 'off');  // Save the preference to localStorage
     }
   }
+
+  // Check if dark mode should be disabled
+  $: isDarkModeDisabled = colorMode !== 'normal';
 </script>
 
 <Navbar bind:isOpen />
@@ -85,6 +100,9 @@
       <select id="color-mode" bind:value={colorMode} class="w-full p-2 border rounded-md text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700">
         <option value="normal">Normal</option>
         <option value="grayscale">Grayscale</option>
+        <option value="deuteranopia">Deuteranopia</option> <!-- Red-green color blindness -->
+        <option value="protanopia">Protanopia</option>     <!-- Red color blindness -->
+        <option value="tritanopia">Tritanopia</option>     <!-- Blue-yellow color blindness -->
       </select>
     </div>
 
@@ -101,7 +119,7 @@
     <!-- Dark Mode Toggle -->
     <div class="settings-option mb-4">
       <label for="dark-mode" class="block text-gray-700 mb-2 dark:text-gray-200">Dark Mode:</label>
-      <select id="dark-mode" bind:value={darkMode} class="w-full p-2 border rounded-md text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700">
+      <select id="dark-mode" bind:value={darkMode} class="w-full p-2 border rounded-md text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700" disabled={isDarkModeDisabled}>
         <option value="off">Off</option>
         <option value="on">On</option>
       </select>

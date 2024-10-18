@@ -1,8 +1,3 @@
-/* app.css */
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
 /* Custom Dark Mode Styles */
 :root.dark {
   --tw-bg-opacity: 1;
@@ -10,23 +5,61 @@
   --tw-text-opacity: 1;
   color: rgba(203, 213, 224, var(--tw-text-opacity)); /* Light text in dark mode */
 }
-
 :root.dark .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgba(45, 55, 72, var(--tw-bg-opacity)); /* Darker background for white elements */
 }
-
 :root.dark .text-gray-700 {
   --tw-text-opacity: 1;
   color: rgba(226, 232, 240, var(--tw-text-opacity)); /* Lighter text in dark mode */
 }
-
 :root.dark .border-gray-300 {
   --tw-border-opacity: 1;
   border-color: rgba(74, 85, 104, var(--tw-border-opacity)); /* Darker border in dark mode */
 }
-
 :root.dark button {
   background-color: #4a5568; /* Darker button background */
   color: white; /* White text for buttons in dark mode */
+}
+
+/* Custom Color Blindness Styles */
+:root.color-grayscale {
+  background-color: #808080; /* Gray background for grayscale mode */
+  color: #000; /* Black text for better contrast */
+}
+:root.color-grayscale .bg-white {
+  background-color: #ccc; /* Light gray for white elements in grayscale mode */
+}
+
+:root.color-deuteranopia {
+  background-color: #FFCC00; /* Adjust color for deuteranopia */
+  color: #000; /* Ensure text is readable */
+}
+:root.color-deuteranopia .bg-white {
+  background-color: #D9D900; /* Adjust white elements for deuteranopia */
+}
+
+:root.color-protanopia {
+  background-color: #FF6600; /* Adjust color for protanopia */
+  color: #000; /* Ensure text is readable */
+}
+:root.color-protanopia .bg-white {
+  background-color: #FFB300; /* Adjust white elements for protanopia */
+}
+
+:root.color-tritanopia {
+  background-color: #99CCFF; /* Adjust color for tritanopia */
+  color: #000; /* Ensure text is readable */
+}
+:root.color-tritanopia .bg-white {
+  background-color: #CCFFFF; /* Adjust white elements for tritanopia */
+}
+
+/* Example button styles for color blindness modes */
+:root.color-grayscale button,
+:root.color-deuteranopia button,
+:root.color-protanopia button,
+:root.color-tritanopia button {
+  background-color: #444; /* Darker button for color blindness modes */
+  color: white; /* Ensure buttons are readable */
 }
