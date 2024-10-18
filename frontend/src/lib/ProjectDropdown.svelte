@@ -9,7 +9,7 @@
       <option value={project}>{project}</option>
     {/each}
   </select>
-</div>rerele
+</div>
 
 <style>
   .dropdown select {
