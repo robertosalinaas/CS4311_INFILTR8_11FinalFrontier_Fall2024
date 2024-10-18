@@ -171,7 +171,7 @@
           </svg> 
         </button>
       </div>
-
+      <!-- Add new IP address input field -->
       {#if addingIp}
         <div class="flex space-x-2 mb-4">
           <input
@@ -189,18 +189,32 @@
           on:consider={handleIpListReorder}
           on:finalize={handleIpListReorder}>
         {#each ipList as item, index(item.id)}
-          <li class="flex justify-between items-center py-3 border-t border-hidden w-3/4 hover:bg-slate-300 dark:hover:bg-gray-700 rounded-lg px-3">
+          <li animate:flip={{ duration: 400, easing: cubicOut}} class="flex justify-between items-center py-3 border-t border-hidden w-3/4 hover:bg-slate-300 dark:hover:bg-gray-700 rounded-lg px-3">
             <div class="flex items-center space-x-3">
+              <!--bind the checkbox state-->
               <input type="checkbox" bind:checked={item.checked} class="w-5 h-5">
               <span class="text-gray-900 dark:text-gray-100">{item.ip}</span>
             </div>
             <div class="flex space-x-2">
+              <!--icons and control-->
+              <!--Up arrow-->
               <button on:click={() => moveUpInIpList(index)} class="text-gray-900 dark:text-gray-100 hover:text-gray-500 dark:hover:text-gray-400">
                 <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
                   <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
                 </svg>
               </button>
-              <!-- Down and delete buttons follow similar dark mode style -->
+              <!--Down arrow-->
+              <button on:click={() => moveDownInIpList(index)} class="text-gray-900 dark:text-gray-100 hover:text-gray-500 dark:hover:text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
+              </button>
+              <!--Delete button-->
+              <button on:click={() => deleteIpItem(index)} class="text-gray-900 dark:text-gray-100 hover:text-gray-500 dark:hover:text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
           </li>
         {/each}
@@ -217,7 +231,7 @@
           </svg>
         </button>
       </div>
-
+      <!-- Add new exploit input field -->
       {#if addingExploit}
         <div class="flex space-x-2 mb-4">
           <input
@@ -235,13 +249,32 @@
           on:consider={handleExploitsReorder}
           on:finalize={handleExploitsReorder}>
         {#each exploits as exploit, index(exploit.id)}
-          <li class="flex justify-between items-center py-3 border-t border-hidden w-3/4 hover:bg-slate-300 dark:hover:bg-gray-700 rounded-lg px-3">
+          <li animate:flip={{ duration: 400, easing: cubicOut}} class="flex justify-between items-center py-3 border-t border-hidden w-3/4 hover:bg-slate-300 dark:hover:bg-gray-700 rounded-lg px-3">
             <div class="flex items-center space-x-3">
+              <!--bind the checkbox state-->
               <input type="checkbox" bind:checked={exploit.checked} class="w-5 h-5">
               <span class="text-gray-900 dark:text-gray-100">{exploit.name}</span>
             </div>
             <div class="flex space-x-2">
-              <!-- Control buttons for moving up, down, delete -->
+              <!-- Icons and Controls -->
+              <!-- Up arrow -->
+              <button on:click={() => moveUpInExploits(index)} class="text-gray-900 dark:text-gray-100 hover:text-gray-500 dark:hover:text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m4.5 15.75 7.5-7.5 7.5 7.5" />
+                </svg>
+              </button>
+              <!-- Down arrow -->
+              <button on:click={() => moveDownInExploits(index)} class="text-gray-900 dark:text-gray-100 hover:text-gray-500 dark:hover:text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                </svg>
+              </button>
+              <!-- Delete button -->
+              <button on:click={() => deleteExploitItem(index)} class="text-gray-900 dark:text-gray-100 hover:text-gray-500 dark:hover:text-gray-400">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
             </div>
           </li>
         {/each}
