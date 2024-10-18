@@ -11,9 +11,9 @@
 
   // Default settings for reset
   const defaultSettings = {
-      colorMode: 'normal',
-      textSize: 'medium',
-      darkMode: 'off',
+    colorMode: 'normal',
+    textSize: 'medium',
+    darkMode: 'off',
   };
 
   // Apply the changes (dark mode, color mode, and text size)
@@ -21,6 +21,10 @@
     applyColorMode();
     applyTextSize();
     applyDarkMode();
+
+    // Persist settings in localStorage
+    localStorage.setItem('textSize', textSize);  // Save text size to localStorage
+    localStorage.setItem('colorMode', colorMode); // Save color mode to localStorage (if desired)
   }
 
   // Reset to default settings
@@ -31,20 +35,33 @@
     applyChanges();
   }
 
-  // Persist the dark mode setting and other changes when mounted
+  // Persist the dark mode, text size, and color mode when mounted
   onMount(() => {
-      // Retrieve saved dark mode setting from localStorage
-      const savedDarkMode = localStorage.getItem('darkMode');
-      if (savedDarkMode) {
-          darkMode = savedDarkMode;
-          applyDarkMode();
-      }
+    // Retrieve saved settings from localStorage
+    const savedDarkMode = localStorage.getItem('darkMode');
+    const savedTextSize = localStorage.getItem('textSize');
+    const savedColorMode = localStorage.getItem('colorMode');
 
-      // Apply the initial settings for color mode and text size
-      applyChanges();
+    if (savedDarkMode) {
+      darkMode = savedDarkMode;
+      applyDarkMode();
+    }
+
+    if (savedTextSize) {
+      textSize = savedTextSize;
+      applyTextSize();
+    }
+
+    if (savedColorMode) {
+      colorMode = savedColorMode;
+      applyColorMode();
+    }
+
+    // Apply the initial settings
+    applyChanges();
   });
 
-  // Apply color blindness modes
+  // Apply color mode changes
   function applyColorMode() {
     document.documentElement.classList.remove('color-normal', 'color-grayscale');
     document.documentElement.classList.add(`color-${colorMode}`);
@@ -67,6 +84,7 @@
     }
   }
 </script>
+
 
 <Navbar bind:isOpen />
 
