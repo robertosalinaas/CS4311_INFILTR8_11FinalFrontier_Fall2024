@@ -30,3 +30,17 @@
   background-color: #4a5568; /* Darker button background */
   color: white; /* White text for buttons in dark mode */
 }
+
+/* Global CSS for text size classes */
+.text-small {
+  font-size: 0.875rem; /* Small text */
+}
+
+.text-medium {
+  font-size: 1rem; /* Medium text */
+}
+
+.text-large {
+  font-size: 1.5rem; /* Large text */
+}
+
