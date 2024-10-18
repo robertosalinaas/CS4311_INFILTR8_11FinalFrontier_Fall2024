@@ -37,34 +37,39 @@
 }
 
 :root.color-deuteranopia {
-  background-color: #FFCC00; /* Adjust color for deuteranopia */
-  color: #000; /* Ensure text is readable */
+  background-color: #e1daae; /* Adjusted background for deuteranopia */
+  color: #2d3142; /* Ensure text is readable */
 }
 :root.color-deuteranopia .bg-white {
-  background-color: #D9D900; /* Adjust white elements for deuteranopia */
+  background-color: #058ed9; /* Adjusted white elements for deuteranopia */
+}
+:root.color-deuteranopia button {
+  background-color: #ff934f; /* Deuteranopia button background */
+  color: white;
 }
 
+/* Protanopia (using the correct colors) */
 :root.color-protanopia {
-  background-color: #FF6600; /* Adjust color for protanopia */
-  color: #000; /* Ensure text is readable */
+  background-color: #e8f086; /* Adjusted background for protanopia */
+  color: #235fa4; /* Ensure text is readable */
 }
 :root.color-protanopia .bg-white {
-  background-color: #FFB300; /* Adjust white elements for protanopia */
+  background-color: #a691ae; /* Adjusted white elements for protanopia */
+}
+:root.color-protanopia button {
+  background-color: #6fde6e; /* Protanopia button background */
+  color: white;
 }
 
+/* Tritanopia (using the correct colors) */
 :root.color-tritanopia {
-  background-color: #99CCFF; /* Adjust color for tritanopia */
-  color: #000; /* Ensure text is readable */
+  background-color: #dd4444; /* Adjusted background for tritanopia */
+  color: #194b4f; /* Ensure text is readable */
 }
 :root.color-tritanopia .bg-white {
-  background-color: #CCFFFF; /* Adjust white elements for tritanopia */
+  background-color: #ffdcdc; /* Adjusted white elements for tritanopia */
 }
-
-/* Example button styles for color blindness modes */
-:root.color-grayscale button,
-:root.color-deuteranopia button,
-:root.color-protanopia button,
 :root.color-tritanopia button {
-  background-color: #444; /* Darker button for color blindness modes */
-  color: white; /* Ensure buttons are readable */
+  background-color: #f48080; /* Tritanopia button background */
+  color: white;
 }

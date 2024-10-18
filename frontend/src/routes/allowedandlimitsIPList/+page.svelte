@@ -1,6 +1,6 @@
 <script>
-  import { onMount } from 'svelte';
   import Navbar from '$lib/navbar.svelte';
+  import { onMount } from 'svelte';
 
   let isOpen = true;
   let projects = [];
