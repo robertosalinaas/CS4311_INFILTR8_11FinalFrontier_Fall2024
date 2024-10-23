@@ -1,6 +1,6 @@
 # INFILTR8 - Intelligent Network Findings with In-Depth Learning for Targeted Reconnaissance
 
-## What is INFILTR8?
+## What is INFILTR8??
 INFILTR8 is a cybersecurity tool designed to facilitate and expedite penetration testing for analysts working within the Cyber Experimentation & Analysis Division (CEAD). The system leverages machine learning (ML) to analyze reconnaissance files and generate a prioritized list of entry points for penetration testing.
 
 
