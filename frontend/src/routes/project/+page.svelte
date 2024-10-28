@@ -12,11 +12,9 @@
   // Define types for IP and Exploit items
   type IPItem = { id: number; ip: string; checked: boolean; type: 'allowed' | 'off-limit' };
   type ExploitItem = { id: number; name: string; checked: boolean; type: 'allowed' | 'unallowed' };
-  type ProjectFolder = { id: number; name: string };
 
-  let selectedProject: number | string = '';
-  let currentProject: ProjectFolder = {id: 0, name: "Example" };
-  let projects: ProjectFolder[] = [];
+  let selectedProject = '';
+  let projects = [];
   let ipList: IPItem[] = [];
   let exploits: ExploitItem[] = [];
   let allowedExploits: ExploitItem[] = [];
@@ -42,7 +40,7 @@
   async function loadProjectIPs() {
     if (selectedProject) {
       try {
-        const response = await fetch('http://localhost:3000/projects/${selectedProject}/ips');
+        const response = await fetch(`http://localhost:3000/projects/${selectedProject}/ips`);
         if (!response.ok) {
           throw new Error('Failed to fetch IPs');
         }
@@ -63,7 +61,7 @@
   async function addIP() {
     if (newIp && selectedProject) {
       try {
-        const response = await fetch('http://localhost:3000/projects/${selectedProject}/allowed-ip', {
+        const response = await fetch(`http://localhost:3000/projects/${selectedProject}/ips`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -81,11 +79,12 @@
       }
     }
   }
+  
 
    // Load exploits (allowed and unallowed)
    async function loadExploits() {
     try {
-      const response = await fetch('http://localhost:3000/projects/${selectedProject}/exploits');
+      const response = await fetch(`http://localhost:3000/projects/${selectedProject}/exploits`);
       if (!response.ok) throw new Error('Failed to fetch exploits');
       const data = await response.json();
       exploits = data.map((exploit: any) => ({
@@ -109,7 +108,7 @@
       };
 
       try {
-        const response = await fetch('http://localhost:3000/projects/${selectedProject}/exploits', {
+        const response = await fetch(`http://localhost:3000/projects/${selectedProject}/exploits`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json'
@@ -143,7 +142,6 @@
     console.log(projects)
     selectedProject = project;
     console.log(selectedProject)
-    currentProject = currentProject;
     loadProjectIPs();
     loadExploits();
   }
@@ -248,7 +246,7 @@
         <div class="flex items-center space-x-4">
           <img loading="lazy" src={folderIconSrc} alt="" class="object-contain shrink-0 self-stretch my-auto aspect-[0.92] w-[49px]" />
           <div>
-            <p class="text-left">{currentProject.name}</p>
+            <p class="text-left">{selectedProject}</p>
           </div>
         </div>
       </button>
@@ -281,7 +279,7 @@
       <ul use:dndzone={{ items: ipList, flipDurationMs: 300 }}
           on:consider={handleIpListReorder}
           on:finalize={handleIpListReorder}>
-        {#each ipList as item, index(item.id)}
+        {#each ipList as item, index(item)}
           <li animate:flip={{ duration: 400, easing: cubicOut}} class="flex justify-between items-center py-3 border-t border-hidden w-3/4 hover:bg-slate-300 dark:hover:bg-gray-700 rounded-lg px-3">
             <div class="flex items-center space-x-3">
               <!--bind the checkbox state-->
@@ -400,15 +398,15 @@
   <aside class="w-full md:w-1/4 p-4 bg-gray-50 dark:bg-gray-900 overflow-y-auto">
     <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Load Project</h2>
     <ul>
-      {#each projects as project (project.id)}
+      {#each projects as project}
       <button 
         class="flex gap-10 justify-between items-center p-2 mt-4 w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-3xl hover:bg-slate-300 dark:hover:bg-gray-700 shadow-lg max-w-[311px]" 
-        on:click={() => selectProject(project.name)}
+        on:click={() => selectProject(project)}
       >
         <div class="flex items-center space-x-3">
           <img loading="lazy" src={folderIconSrc} alt="" class="object-contain shrink-0 self-stretch my-auto aspect-[0.92] w-[49px]" />
           <div>
-            <p class="text-left text-gray-900 dark:text-gray-100">{project.name}</p>
+            <p class="text-left text-gray-900 dark:text-gray-100">{project}</p>
            <!-- <span class="text-sm text-gray-500 dark:text-gray-400">{folder.items} items | {folder.size}</span> -->
           </div>
         </div>
