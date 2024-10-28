@@ -114,6 +114,7 @@ app.get('/download/:filename', (req, res) => {
 
 // Get all projects
 app.get('/projects', async (req, res) => {
+  const session = driver.session();
   try {
     const result = await session.run('MATCH (p:Project) RETURN p.name AS name');
     const projects = result.records.map((record) => record.get('name'));
@@ -121,11 +122,14 @@ app.get('/projects', async (req, res) => {
   } catch (error) {
     console.error('Error fetching projects:', error);
     res.status(500).send(error.message);
+  } finally {
+    await session.close();
   }
 });
 
 // Create a new project
 app.post('/projects', async (req, res) => {
+  const session = driver.session();
   const { name } = req.body;
   try {
     await session.run('CREATE (p:Project {name: $name})', { name });
@@ -135,17 +139,20 @@ app.post('/projects', async (req, res) => {
     console.error('Error creating project:', error);
     logToCSV(`Error creating project: ${name}, Error: ${error.message}`);
     res.status(500).send(error.message);
+  } finally {
+    await session.close();
   }
 });
 
 // Add allowed IP to a project
 app.post('/projects/:projectName/allowed-ip', async (req, res) => {
+  const session = driver.session();
   const { projectName } = req.params;
   const { ip } = req.body;
   try {
     await session.run(
       'MATCH (p:Project {name: $projectName}) ' +
-        'MERGE (p)-[:HAS_ALLOWED_IP]->(:IP {address: $ip})',
+      'MERGE (p)-[:HAS_ALLOWED_IP]->(:IP {address: $ip})',
       { projectName, ip }
     );
     logToCSV(`Allowed IP added: ${ip} to project: ${projectName}`);
@@ -156,17 +163,20 @@ app.post('/projects/:projectName/allowed-ip', async (req, res) => {
       `Error adding allowed IP: ${ip} to project: ${projectName}, Error: ${error.message}`
     );
     res.status(500).send(error.message);
+  } finally {
+    await session.close();
   }
 });
 
 // Add off-limit IP to a project
 app.post('/projects/:projectName/off-limit-ip', async (req, res) => {
+  const session = driver.session();
   const { projectName } = req.params;
   const { ip } = req.body;
   try {
     await session.run(
       'MATCH (p:Project {name: $projectName}) ' +
-        'MERGE (p)-[:HAS_OFF_LIMIT_IP]->(:IP {address: $ip})',
+      'MERGE (p)-[:HAS_OFF_LIMIT_IP]->(:IP {address: $ip})',
       { projectName, ip }
     );
     logToCSV(`Off-limit IP added: ${ip} to project: ${projectName}`);
@@ -177,20 +187,23 @@ app.post('/projects/:projectName/off-limit-ip', async (req, res) => {
       `Error adding off-limit IP: ${ip} to project: ${projectName}, Error: ${error.message}`
     );
     res.status(500).send(error.message);
+  } finally {
+    await session.close();
   }
 });
 
 // Get IPs for a project
 app.get('/projects/:projectName/ips', async (req, res) => {
+  const session = driver.session();
   const { projectName } = req.params;
-  console.log(`Fetching IPs for project: ${projectName}`);
   try {
     const result = await session.run(
-      'MATCH (p:Project {name: $projectName})-[r:HAS_ALLOWED_IP|HAS_OFF_LIMIT_IP]->(ip:IP) ' +
-        'RETURN ip.address AS address, type(r) AS type',
+      `MATCH (p:Project {name: $projectName})-[r:HAS_ALLOWED_IP|HAS_OFF_LIMIT_IP]->(ip:IP)
+       RETURN id(ip) AS id, ip.address AS address, type(r) AS type`,
       { projectName }
     );
     const ips = result.records.map((record) => ({
+      id: record.get('id').toNumber(),
       address: record.get('address'),
       type: record.get('type'),
     }));
@@ -198,8 +211,113 @@ app.get('/projects/:projectName/ips', async (req, res) => {
   } catch (error) {
     console.error('Error fetching IPs:', error);
     res.status(500).send(error.message);
+  } finally {
+    await session.close();
   }
 });
+
+// Add allowed exploit to a project
+app.post('/projects/:projectName/allowed-exploit', async (req, res) => {
+  const session = driver.session();
+  const { projectName } = req.params;
+  const { name } = req.body;
+  try {
+    await session.run(
+      'MATCH (p:Project {name: $projectName}) ' +
+      'MERGE (p)-[:HAS_ALLOWED_EXPLOIT]->(:Exploit {name: $name})',
+      { projectName, name }
+    );
+    logToCSV(`Allowed exploit added: ${name} to project: ${projectName}`);
+    res.status(201).send('Allowed exploit added');
+  } catch (error) {
+    console.error('Error adding allowed exploit:', error);
+    logToCSV(`Error adding allowed exploit: ${name} to project: ${projectName}, Error: ${error.message}`);
+    res.status(500).send(error.message);
+  } finally {
+    await session.close();
+  }
+});
+
+// Add off-limit exploit to a project
+app.post('/projects/:projectName/off-limit-exploit', async (req, res) => {
+  const session = driver.session();
+  const { projectName } = req.params;
+  const { name } = req.body;
+  try {
+    await session.run(
+      'MATCH (p:Project {name: $projectName}) ' +
+      'MERGE (p)-[:HAS_OFF_LIMIT_EXPLOIT]->(:Exploit {name: $name})',
+      { projectName, name }
+    );
+    logToCSV(`Off-limit exploit added: ${name} to project: ${projectName}`);
+    res.status(201).send('Off-limit exploit added');
+  } catch (error) {
+    console.error('Error adding off-limit exploit:', error);
+    logToCSV(`Error adding off-limit exploit: ${name} to project: ${projectName}, Error: ${error.message}`);
+    res.status(500).send(error.message);
+  } finally {
+    await session.close();
+  }
+});
+
+// Get exploits for a project
+app.get('/projects/:projectName/exploits', async (req, res) => {
+  const session = driver.session();
+  const { projectName } = req.params;
+  try {
+    const result = await session.run(
+      'MATCH (p:Project {name: $projectName})-[r:HAS_ALLOWED_EXPLOIT|HAS_OFF_LIMIT_EXPLOIT]->(exploit:Exploit) ' +
+      'RETURN exploit.name AS name, type(r) AS type, id(exploit) AS id',
+      { projectName }
+    );
+    const exploits = result.records.map((record) => ({
+      name: record.get('name'),
+      id: record.get('id').toNumber(),
+      type: record.get('type'),
+    }));
+    res.json(exploits);
+  } catch (error) {
+    console.error('Error fetching exploits:', error);
+    res.status(500).send(error.message);
+  } finally {
+    await session.close();
+  }
+});
+
+// Delete an IP from a project
+app.delete('/projects/:projectName/ips/:ipId', async (req, res) => {
+  const { projectName, ipId } = req.params;
+  try {
+    await session.run(
+      `MATCH (p:Project {name: $projectName})-[r:HAS_ALLOWED_IP|HAS_OFF_LIMIT_IP]->(ip:IP)
+       WHERE id(ip) = $ipId
+       DELETE r, ip`,
+      { projectName, ipId: parseInt(ipId) }
+    );
+    res.status(200).send('IP deleted');
+  } catch (error) {
+    console.error('Error deleting IP:', error);
+    res.status(500).send(error.message);
+  } 
+});
+
+// Delete an exploit from a project
+app.delete('/projects/:projectName/exploits/:exploitId', async (req, res) => {
+  const { projectName, exploitId } = req.params;
+  try {
+    await session.run(
+      `MATCH (p:Project {name: $projectName})-[r:HAS_ALLOWED_EXPLOIT|HAS_OFF_LIMIT_EXPLOIT]->(e:Exploit)
+       WHERE id(e) = $exploitId
+       DELETE r, e`,
+      { projectName, exploitId: parseInt(exploitId) }
+    );
+    res.status(200).send('Exploit deleted');
+  } catch (error) {
+    console.error('Error deleting exploit:', error);
+    res.status(500).send(error.message);
+  }
+});
+
 
 // Error handling middleware
 app.use((err, req, res, next) => {
