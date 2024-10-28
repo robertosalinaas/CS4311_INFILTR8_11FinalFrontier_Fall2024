@@ -122,6 +122,31 @@
     exploits.splice(index, 1); 
     exploits = [...exploits];
   }
+  // Function to import IP addresses from a text file
+  function importIPList(file: File) {
+    const reader = new FileReader();
+    reader.onload = () => {
+        const content = reader.result as string;
+        
+        // Split the file content by commas to get each IP as an element in an array
+        const newIPs = content.split(',')
+            .map(ip => ip.trim()) // Trim whitespace from each IP
+            .filter(ip => ip.length > 0) // Filter out any empty entries
+            .map(ip => ({ id: ipIdCounter++, ip, checked: false })); // Map each IP to an IPItem
+
+        // Add these IP items to the existing ipList
+        ipList = [...ipList, ...newIPs];
+    };
+    reader.readAsText(file);
+  }
+
+  // Handler function for file input change
+  function handleFileInput(event: Event) {
+    const file = (event.target as HTMLInputElement).files?.[0];
+    if (file) {
+      importIPList(file);
+    }
+  }
 
   let folderIconSrc = "https://cdn.builder.io/api/v1/image/assets/TEMP/bd5f3ae2fb45d029aa12a06c1bac426e682908ad489f1f444bcb1ee1a84a5cf3?placeholderIfAbsent=true&apiKey=2e556ccd119247e0ab85e312accfd79c";
   let arrorIconSrc = "https://cdn.builder.io/api/v1/image/assets/TEMP/44108f81ceaa218666ee8493a94a51cb92183cc4e709837f56b6b45348e16b4b?placeholderIfAbsent=true&apiKey=2e556ccd119247e0ab85e312accfd79c";
@@ -171,6 +196,11 @@
           </svg> 
         </button>
       </div>
+
+      <!-- File input for importing IP addresses -->
+      <!-- Added file input to allow users to upload .txt files with IP addresses -->
+      <input type="file" accept=".txt" on:change={handleFileInput} class="mt-2 mb-4" />
+
       <!-- Add new IP address input field -->
       {#if addingIp}
         <div class="flex space-x-2 mb-4">
