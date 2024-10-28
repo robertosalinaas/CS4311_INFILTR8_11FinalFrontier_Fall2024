@@ -10,37 +10,66 @@
   --tw-text-opacity: 1;
   color: rgba(203, 213, 224, var(--tw-text-opacity)); /* Light text in dark mode */
 }
-
 :root.dark .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgba(45, 55, 72, var(--tw-bg-opacity)); /* Darker background for white elements */
 }
-
 :root.dark .text-gray-700 {
   --tw-text-opacity: 1;
   color: rgba(226, 232, 240, var(--tw-text-opacity)); /* Lighter text in dark mode */
 }
-
 :root.dark .border-gray-300 {
   --tw-border-opacity: 1;
   border-color: rgba(74, 85, 104, var(--tw-border-opacity)); /* Darker border in dark mode */
 }
-
 :root.dark button {
   background-color: #4a5568; /* Darker button background */
   color: white; /* White text for buttons in dark mode */
 }
 
-/* Global CSS for text size classes */
-.text-small {
-  font-size: 0.875rem; /* Small text */
+/* Custom Color Blindness Styles */
+:root.color-grayscale {
+  background-color: #808080; /* Gray background for grayscale mode */
+  color: #000; /* Black text for better contrast */
+}
+:root.color-grayscale .bg-white {
+  background-color: #ccc; /* Light gray for white elements in grayscale mode */
 }
 
-.text-medium {
-  font-size: 1rem; /* Medium text */
+:root.color-deuteranopia {
+  background-color: #e1daae; /* Adjusted background for deuteranopia */
+  color: #2d3142; /* Ensure text is readable */
+}
+:root.color-deuteranopia .bg-white {
+  background-color: #058ed9; /* Adjusted white elements for deuteranopia */
+}
+:root.color-deuteranopia button {
+  background-color: #ff934f; /* Deuteranopia button background */
+  color: white;
 }
 
-.text-large {
-  font-size: 1.5rem; /* Large text */
+/* Protanopia (using the correct colors) */
+:root.color-protanopia {
+  background-color: #e8f086; /* Adjusted background for protanopia */
+  color: #235fa4; /* Ensure text is readable */
+}
+:root.color-protanopia .bg-white {
+  background-color: #a691ae; /* Adjusted white elements for protanopia */
+}
+:root.color-protanopia button {
+  background-color: #6fde6e; /* Protanopia button background */
+  color: white;
 }
 
+/* Tritanopia (using the correct colors) */
+:root.color-tritanopia {
+  background-color: #dd4444; /* Adjusted background for tritanopia */
+  color: #194b4f; /* Ensure text is readable */
+}
+:root.color-tritanopia .bg-white {
+  background-color: #ffdcdc; /* Adjusted white elements for tritanopia */
+}
+:root.color-tritanopia button {
+  background-color: #f48080; /* Tritanopia button background */
+  color: white;
+}
