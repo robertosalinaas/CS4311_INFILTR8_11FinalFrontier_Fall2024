@@ -2,6 +2,7 @@ import sys
 import os
 import xml.etree.ElementTree as ET
 import pandas as pd
+import json
 import category_encoders as ce
 from sklearn.preprocessing import MinMaxScaler
 
@@ -24,6 +25,7 @@ data_with_exploits_path = os.path.join(output_base_dir, 'data_with_exploits.csv'
 ranked_entry_points_path = os.path.join(output_base_dir, 'ranked_entry_points.csv')
 entrypoint_most_info_path = os.path.join(output_base_dir, 'entrypoint_most_info.csv')
 port_0_entries_path = os.path.join(output_base_dir, 'port_0_entries.csv')
+exploits_output_path = os.path.join(output_base_dir, 'exploits.json')
 
 # Initialize an empty DataFrame
 df = pd.DataFrame(columns=[])
@@ -48,6 +50,8 @@ def map_to_archetype(plugin_name, plugin_family):
             if keyword.lower() in plugin_name.lower() or keyword.lower() in plugin_family.lower():
                 return archetype
     return 'Other'
+
+exploits = []
 
 # Iterate through each ReportHost element in the XML
 for host in main_tree.findall('.//ReportHost'):
@@ -78,9 +82,18 @@ for host in main_tree.findall('.//ReportHost'):
         # Check for viable exploit indicators
         severity = int(child.attrib.get('severity', '0'))
         exploit_available = child.find('.//exploit_available')
+        if exploit_available is not None:
+            for exploit in exploit_available:
+                exploit_info = {
+                    'name': exploit.attrib.get('exploit_name', 'Unknown'),
+                    'type': 'HAS_AVAILABLE_EXPLOIT',
+                    # You can add more exploit-specific fields as needed
+                }
+                exploits.append(exploit_info)
+
+
         exploitability_ease = child.find('.//exploitability_ease')
         cvss_base_score = float(child.attrib.get('cvss_base_score', '0.0'))
-
         viable_exploit = (exploit_available is not None) or (exploitability_ease is not None and exploitability_ease.text in ['Exploitable', 'Easy'])
 
         df.at[ind, 'viable_exploit'] = viable_exploit
@@ -94,6 +107,11 @@ for host in main_tree.findall('.//ReportHost'):
         plugin_family = child.attrib.get('pluginFamily', '')
         archetype = map_to_archetype(plugin_name, plugin_family)
         df.at[ind, 'archetype'] = archetype
+
+# Save exploits to JSON
+with open(exploits_output_path, 'w') as f:
+    json.dump(exploits, f)
+print(f"Exploit data saved to {exploits_output_path}")
 
 # Export DataFrame to CSV file
 df.to_csv(data_with_exploits_path, index=False)
