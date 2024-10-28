@@ -4,72 +4,160 @@
   export let isOpen = true;
   
   import Navbar from '$lib/navbar.svelte';
+  import { onMount } from 'svelte';
   import { dndzone } from 'svelte-dnd-action';
   import { flip } from 'svelte/animate';
   import { cubicOut } from 'svelte/easing';
 
   // Define types for IP and Exploit items
-  type IPItem = { id: number; ip: string; checked: boolean };
-  type ExploitItem = { id: number; name: string; checked: boolean };
-  type ProjectFolder = { name: string; items: number; size: string };
+  type IPItem = { id: number; ip: string; checked: boolean; type: 'allowed' | 'off-limit' };
+  type ExploitItem = { id: number; name: string; checked: boolean; type: 'allowed' | 'unallowed' };
+  type ProjectFolder = { id: number; name: string };
 
-  // Data for the current project and project folders to load
-  let currentProject: ProjectFolder = { name: "Example", items: 109, size: "1.6 GB" };
+  let selectedProject: number | string = '';
+  let currentProject: ProjectFolder = {id: 0, name: "Example" };
+  let projects: ProjectFolder[] = [];
+  let ipList: IPItem[] = [];
+  let exploits: ExploitItem[] = [];
+  let allowedExploits: ExploitItem[] = [];
+  let unallowedExploits: ExploitItem[] = [];
+  let newIp = ''
+  let newExploit = '';
+  let isAllowed = true; // Defaults to "allowed"
 
-  let loadProjects: ProjectFolder[] = [
-    { name: "Project A", items: 49, size: "1.42 MB" },
-    { name: "Project B", items: 286, size: "2.6 GB" },
-    { name: "Project C", items: 52, size: "64 MB" },
-  ];
 
-  let ipList: IPItem[] = [
-    { id: 1, ip: "192.168.2.8", checked: false },
-    { id: 2, ip: "192.168.21.5", checked: false },
-    { id: 3, ip: "192.198.8.43", checked: false },
-    { id: 4, ip: "192.168.5.5", checked: false },
-  ];
-
-  let exploits: ExploitItem[] = [
-    { id: 101, name: "SQL Injection", checked: false },
-    { id: 102, name: "DDoS Attack", checked: false },
-    { id: 103, name: "Default Credentials", checked: false },
-    { id: 104, name: "Missing Encryption", checked: false },
-    { id: 105, name: "Unauthenticated Port Bypass", checked: false },
-    { id: 106, name: "Weak Passwords", checked: false },
-  ];
-
-  let ipIdCounter = ipList.length + 1;
-  let exploitIdCounter = exploits.length + 1;
-  let newIp = ''; 
-  let newExploit = ''; 
-  let addingIp = false;
-  let addingExploit = false;
-
-  function selectProject(index: number) {
-    const selectedProject = loadProjects[index];
-    loadProjects[index] = currentProject;
-    currentProject = selectedProject;
-  }
-
-  function submitNewIp() {
-    if (newIp.trim() !== '') {
-      ipList = [...ipList, { id: ipIdCounter++, ip: newIp, checked: true }];
-      newIp = '';        
-      addingIp = false; 
-    } else {
-      alert('Please enter a valid IP address');
+  async function loadProjects() {
+    try {
+      const response = await fetch('http://localhost:3000/projects');
+      if (!response.ok) {
+        throw new Error('Failed to fetch projects');
+      }
+      projects = await response.json();
+    } catch (error) {
+      console.error('Error loading projects:', error);
     }
   }
 
-  function submitNewExploit() {
+  // Function to load IPs for the selected project
+  async function loadProjectIPs() {
+    if (selectedProject) {
+      try {
+        const response = await fetch('http://localhost:3000/projects/${selectedProject}/ips');
+        if (!response.ok) {
+          throw new Error('Failed to fetch IPs');
+        }
+        const ips = await response.json();
+        ipList = ips.map((ip: any) => ({
+          id: ip.id,
+          ip: ip.address,
+          checked: false,
+          type: ip.type === 'HAS_ALLOWED_IP' ? 'allowed' : 'off-limit',
+        }));
+      } catch (error) {
+        console.error('Error loading project IPs:', error);
+      }
+    }
+  }
+
+  // Function to add a new IP to the selected project
+  async function addIP() {
+    if (newIp && selectedProject) {
+      try {
+        const response = await fetch('http://localhost:3000/projects/${selectedProject}/allowed-ip', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({ ip: newIp, type: 'HAS_ALLOWED_IP' }) // Assume it's allowed by default
+        });
+        if (!response.ok) {
+          throw new Error('Failed to add IP');
+        }
+        const addedIP = await response.json();
+        ipList = [...ipList, { id: addedIP.id, ip: newIp, checked: false, type: 'allowed' }];
+        newIp = '';
+      } catch (error) {
+        console.error('Error adding IP:', error);
+      }
+    }
+  }
+
+   // Load exploits (allowed and unallowed)
+   async function loadExploits() {
+    try {
+      const response = await fetch('http://localhost:3000/projects/${selectedProject}/exploits');
+      if (!response.ok) throw new Error('Failed to fetch exploits');
+      const data = await response.json();
+      exploits = data.map((exploit: any) => ({
+        id: exploit.id,
+        name: exploit.name,
+        checked: false,
+        type: exploit.type === 'HAS_ALLOWED_EXPLOIT' ? 'allowed' : 'unallowed'
+      }));
+    } catch (error) {
+      console.error('Error loading exploits:', error);
+    }
+  }
+
+  async function addExploit() {
     if (newExploit.trim() !== '') {
-      exploits = [...exploits, { id: exploitIdCounter++, name: newExploit, checked: false }];
-      newExploit = ''; 
-      addingExploit = false; 
+      const exploitData: ExploitItem = {
+        id: exploits.length + 1,
+        name: newExploit,
+        checked: false,
+        type: isAllowed ? 'allowed' : 'unallowed'
+      };
+
+      try {
+        const response = await fetch('http://localhost:3000/projects/${selectedProject}/exploits', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+            name: newExploit,
+            type: isAllowed ? 'HAS_ALLOWED_EXPLOIT' : 'HAS_OFF_LIMIT_EXPLOIT'
+          })
+        });
+
+        if (!response.ok) throw new Error(`Failed to add ${isAllowed ? 'allowed' : 'off-limit'} exploit`);
+
+        exploits = [...exploits, exploitData];
+        newExploit = '';
+        isAllowed = true;
+        addingExploit = false;
+      } catch (error) {
+        console.error('Error adding exploit:', error);
+        alert(`Error adding exploit: ${error}`);
+      }
     } else {
       alert('Please enter a valid exploit name');
     }
   }
+
+
+  console.log(projects)
+
+    // Select a project and load its IPs and exploits
+  function selectProject(project: string) {
+    console.log(projects)
+    selectedProject = project;
+    console.log(selectedProject)
+    currentProject = currentProject;
+    loadProjectIPs();
+    loadExploits();
+  }
+
+  // Initialize data on mount
+  onMount(() => {
+    loadProjects();
+    loadExploits();
+  });
+ 
+  console.log(projects)
+  let addingIp = false;
+  let addingExploit = false;
+
 
   function startAddingIp() {
     addingIp = true;
@@ -123,6 +211,12 @@
     exploits = [...exploits];
   }
 
+  onMount(() => {
+    loadProjects();  // Fetch projects when the component mounts
+  });
+
+  $: if (selectedProject) loadProjectIPs();
+
   let folderIconSrc = "https://cdn.builder.io/api/v1/image/assets/TEMP/bd5f3ae2fb45d029aa12a06c1bac426e682908ad489f1f444bcb1ee1a84a5cf3?placeholderIfAbsent=true&apiKey=2e556ccd119247e0ab85e312accfd79c";
   let arrorIconSrc = "https://cdn.builder.io/api/v1/image/assets/TEMP/44108f81ceaa218666ee8493a94a51cb92183cc4e709837f56b6b45348e16b4b?placeholderIfAbsent=true&apiKey=2e556ccd119247e0ab85e312accfd79c";
 </script>
@@ -155,7 +249,6 @@
           <img loading="lazy" src={folderIconSrc} alt="" class="object-contain shrink-0 self-stretch my-auto aspect-[0.92] w-[49px]" />
           <div>
             <p class="text-left">{currentProject.name}</p>
-            <span class="text-sm text-gray-500 dark:text-gray-400">{currentProject.items} items, {currentProject.size}</span>
           </div>
         </div>
       </button>
@@ -179,9 +272,9 @@
             bind:value={newIp}
             placeholder="Enter new IP address"
             class="border border-gray-300 dark:border-gray-600 rounded px-2 py-1 w-48 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-            on:keydown={(e) => e.key === 'Enter' && submitNewIp()}
+            on:keydown={(e) => e.key === 'Enter' && addIP()}
           />
-          <button on:click={submitNewIp} class="bg-teal-600 dark:bg-teal-500 text-white px-3 py-2 rounded-md hover:bg-teal-700 dark:hover:bg-teal-600">Add</button>
+          <button on:click={addIP} class="bg-teal-600 dark:bg-teal-500 text-white px-3 py-2 rounded-md hover:bg-teal-700 dark:hover:bg-teal-600">Add</button>
         </div>
       {/if}
 
@@ -192,7 +285,7 @@
           <li animate:flip={{ duration: 400, easing: cubicOut}} class="flex justify-between items-center py-3 border-t border-hidden w-3/4 hover:bg-slate-300 dark:hover:bg-gray-700 rounded-lg px-3">
             <div class="flex items-center space-x-3">
               <!--bind the checkbox state-->
-              <input type="checkbox" bind:checked={item.checked} class="w-5 h-5">
+              <input type="checkbox" bind:checked={item.checked} class="w-5 h-5 {item.type === 'allowed' ? 'allowed-checkbox' : 'off-limit-checkbox'}">
               <span class="text-gray-900 dark:text-gray-100">{item.ip}</span>
             </div>
             <div class="flex space-x-2">
@@ -234,16 +327,32 @@
       <!-- Add new exploit input field -->
       {#if addingExploit}
         <div class="flex space-x-2 mb-4">
+          <!-- Text input for the new exploit name -->
           <input
             type="text"
             bind:value={newExploit}
             placeholder="Enter new exploit"
             class="border border-gray-300 dark:border-gray-600 rounded px-2 py-1 w-48 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100"
-            on:keydown={(e) => e.key === 'Enter' && submitNewExploit()}
+            on:keydown={(e) => e.key === 'Enter' && addExploit()}
           />
-          <button on:click={submitNewExploit} class="bg-teal-600 dark:bg-teal-500 text-white px-3 py-2 rounded-md hover:bg-teal-700 dark:hover:bg-teal-600">Add</button>
+
+          <!-- Checkbox to specify if the exploit is allowed or off-limit -->
+          <label class="flex items-center space-x-2 text-gray-900 dark:text-gray-100">
+            <input 
+              type="checkbox" 
+              bind:checked={isAllowed} 
+              class="form-checkbox h-5 w-5 text-teal-600 dark:text-teal-500"
+            />
+            <span>Allowed</span>
+          </label>
+
+          <!-- Add button to submit the new exploit -->
+          <button on:click={addExploit} class="bg-teal-600 dark:bg-teal-500 text-white px-3 py-2 rounded-md hover:bg-teal-700 dark:hover:bg-teal-600">
+            Add
+          </button>
         </div>
       {/if}
+
 
       <ul use:dndzone={{ items: exploits, flipDurationMs: 300 }}
           on:consider={handleExploitsReorder}
@@ -291,16 +400,16 @@
   <aside class="w-full md:w-1/4 p-4 bg-gray-50 dark:bg-gray-900 overflow-y-auto">
     <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-gray-100">Load Project</h2>
     <ul>
-      {#each loadProjects as folder, index}
+      {#each projects as project (project.id)}
       <button 
         class="flex gap-10 justify-between items-center p-2 mt-4 w-full bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 rounded-3xl hover:bg-slate-300 dark:hover:bg-gray-700 shadow-lg max-w-[311px]" 
-        on:click={() => selectProject(index)}
+        on:click={() => selectProject(project.name)}
       >
         <div class="flex items-center space-x-3">
           <img loading="lazy" src={folderIconSrc} alt="" class="object-contain shrink-0 self-stretch my-auto aspect-[0.92] w-[49px]" />
           <div>
-            <p class="text-left text-gray-900 dark:text-gray-100">{folder.name}</p>
-            <span class="text-sm text-gray-500 dark:text-gray-400">{folder.items} items | {folder.size}</span>
+            <p class="text-left text-gray-900 dark:text-gray-100">{project.name}</p>
+           <!-- <span class="text-sm text-gray-500 dark:text-gray-400">{folder.items} items | {folder.size}</span> -->
           </div>
         </div>
         <img loading="lazy" src={arrorIconSrc} alt="" class="object-contain shrink-0 self-stretch my-auto w-6 aspect-square" />
