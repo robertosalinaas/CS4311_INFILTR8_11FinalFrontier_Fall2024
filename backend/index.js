@@ -42,64 +42,80 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-// Route for file upload
-app.post('/upload', upload.single('file'), (req, res) => {
-  if (!req.file) {
-    return res.status(400).send('No file uploaded.');
-  }
+// Route to add exploits to a project vrom json file
+app.post('/projects/:projectName/add-exploits', async (req, res) => {
+  const { projectName } = req.params;
+  const exploitsFile = path.join(__dirname, 'Process_5', 'exploits.json');
 
-  logToCSV(`File uploaded: ${req.file.filename}`);
+  try {
+    // Read exploit data
+    const exploitData = JSON.parse(fs.readFileSync(exploitsFile, 'utf8'));
 
-  console.log(`Current directory: ${__dirname}`);
-
-  const pythonScriptPath = path.join(__dirname, 'process_nessus.py');
-  console.log(`Looking for Python script at: ${pythonScriptPath}`);
-
-  if (!fs.existsSync(pythonScriptPath)) {
-    console.error(`Python script not found at ${pythonScriptPath}`);
-    return res.status(500).json({
-      filename: req.file.filename,
-      message: 'File uploaded but Python script not found',
-    });
-  }
-
-  const pythonProcess = spawn('python', [pythonScriptPath, req.file.filename]);
-
-  pythonProcess.stdout.on('data', (data) => {
-    console.log(`Python script output: ${data}`);
-  });
-
-  pythonProcess.stderr.on('data', (data) => {
-    console.error(`Python script error: ${data}`);
-  });
-
-  pythonProcess.on('close', (code) => {
-    console.log(`Python script exited with code ${code}`);
-    if (code === 0) {
-      const csvDir = path.join(__dirname, 'Process_5');
-      fs.readdir(csvDir, (err, files) => {
-        if (err) {
-          console.error('Error reading CSV directory:', err);
-          return res.status(500).json({
-            filename: req.file.filename,
-            message: 'File processed but error occurred while reading CSV files',
-          });
-        }
-        const csvFiles = files.filter((file) => file.endsWith('.csv'));
-        res.json({
-          filename: req.file.filename,
-          message: 'File uploaded and processed successfully',
-          csvFiles: csvFiles,
-        });
-      });
-    } else {
-      res.status(500).json({
-        filename: req.file.filename,
-        message: 'File uploaded but processing failed',
-      });
+    // Check if project exists
+    const projectResult = await session.run('MATCH (p:Project {name: $projectName}) RETURN p', { projectName });
+    if (projectResult.records.length === 0) {
+      return res.status(404).send('Project not found');
     }
-  });
+
+    // Add each exploit to the project
+    for (const exploit of exploitData) {
+      await session.run(
+        'MATCH (p:Project {name: $projectName}) ' +
+        'MERGE (e:Exploit {name: $name}) ' +
+        'MERGE (p)-[:HAS_AVAILABLE_EXPLOIT]->(e)',
+        { projectName, name: exploit.name }
+      );
+    }
+
+    res.status(200).send('Exploits added successfully');
+  } catch (error) {
+    console.error('Error adding exploits:', error);
+    res.status(500).send('Error adding exploits');
+  }
 });
+
+// Route to upload a Nessus file and process it
+app.post('/upload', upload.single('file'), async (req, res) => {
+  const { projectName } = req.body;
+  if (!projectName || !req.file) return res.status(400).send('Project name and file are required.');
+
+  const filePath = path.join(__dirname, 'nessus_datasets', req.file.filename);
+  const pythonScriptPath = path.join(__dirname, 'process_nessus.py');
+  const exploitOutputPath = path.join(__dirname, 'Process_5', 'exploits.json');
+
+  try {
+    // 1. Create or get the project
+    await session.run('MERGE (p:Project {name: $projectName}) RETURN p', { projectName });
+
+    // 2. Run the Python script for file processing
+    const pythonProcess = spawn('python', [pythonScriptPath, req.file.filename]);
+    pythonProcess.on('close', async (code) => {
+      if (code !== 0) return res.status(500).send('Error processing file');
+
+      // 3. Read exploit data from the generated JSON file
+      const exploitData = JSON.parse(fs.readFileSync(exploitOutputPath, 'utf8'));
+      for (const exploit of exploitData) {
+        await session.run(
+          'MATCH (p:Project {name: $projectName}) ' +
+          'MERGE (e:Exploit {name: $name}) ' +
+          'MERGE (p)-[:HAS_AVAILABLE_EXPLOIT]->(e)',
+          { projectName, name: exploit.name }
+        );
+      }
+
+      const csvFiles = files.filter((file) => file.endsWith('.csv'));
+      res.json({
+        filename: req.file.filename,
+        message: 'File uploaded and processed successfully',
+        csvFiles: csvFiles,
+      });    
+    });
+  } catch (error) {
+    console.error('Error in upload:', error);
+    res.status(500).send('Error in upload process');
+  }
+});
+
 
 // Route to download CSV files
 app.get('/download/:filename', (req, res) => {
@@ -127,22 +143,23 @@ app.get('/projects', async (req, res) => {
   }
 });
 
-// Create a new project
+// Create a new project with an optional Nessus file reference
 app.post('/projects', async (req, res) => {
-  const session = driver.session();
-  const { name } = req.body;
+  const { name, nessusFile = null } = req.body;  // Accept nessusFile as part of the request
   try {
-    await session.run('CREATE (p:Project {name: $name})', { name });
-    logToCSV(`Project created: ${name}`);
+    await session.run(
+      'CREATE (p:Project {name: $name, nessusFile: $nessusFile})',
+      { name, nessusFile }
+    );
+    logToCSV(`Project created: ${name} with file reference: ${nessusFile}`);
     res.status(201).send('Project created');
   } catch (error) {
     console.error('Error creating project:', error);
     logToCSV(`Error creating project: ${name}, Error: ${error.message}`);
     res.status(500).send(error.message);
-  } finally {
-    await session.close();
   }
 });
+
 
 // Add allowed IP to a project
 app.post('/projects/:projectName/allowed-ip', async (req, res) => {
