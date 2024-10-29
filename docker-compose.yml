@@ -14,6 +14,7 @@ services:
       - NODE_ENV=development
     command: npm run dev -- --host 0.0.0.0
 
+
   backend:
     build:
       context: ./backend
