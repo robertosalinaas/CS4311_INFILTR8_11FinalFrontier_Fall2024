@@ -13,7 +13,7 @@
 
 .bg-white {
   --tw-bg-opacity: 1;
-  background-color: turquoise; /* White background for normal mode */
+  background-color: #395068; /* White background for normal mode */
 }
 
 .text-gray-700 {
@@ -23,11 +23,11 @@
 
 .border-gray-300 {
   --tw-border-opacity: 1;
-  border-color: black; /* Default border color */
+  border-color: gray; /* Default border color */
 }
 
 button {
-  background-color: black; /* Default button background */
+  background-color: #34495e; /* Default button background */
   color: white; /* Black text for buttons in normal mode */
 }
 
