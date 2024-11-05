@@ -64,7 +64,7 @@ button {
 }
 :root.color-grayscale .bg-white {
   --tw-bg-opacity: 1;
-  background-color: white; /* Light gray for white elements in grayscale mode */
+  background-color: grey; /* Light gray for white elements in grayscale mode */
 }
 :root.color-deuteranopia button {
   background-color: black; /* Grayscale button background */
