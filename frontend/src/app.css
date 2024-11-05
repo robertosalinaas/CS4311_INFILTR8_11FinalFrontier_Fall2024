@@ -3,6 +3,34 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Normal (Default) Styles */
+:root {
+  --tw-bg-opacity: 1;
+  background-color: white; /* Default background */
+  --tw-text-opacity: 1;
+  color: #1f2937; /* Default text color */
+}
+
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: turquoise; /* White background for normal mode */
+}
+
+.text-gray-700 {
+  --tw-text-opacity: 1;
+  color: black; /* Default gray text */
+}
+
+.border-gray-300 {
+  --tw-border-opacity: 1;
+  border-color: black; /* Default border color */
+}
+
+button {
+  background-color: turquoise; /* Default button background */
+  color: black; /* Black text for buttons in normal mode */
+}
+
 /* Custom Dark Mode Styles */
 :root.dark {
   --tw-bg-opacity: 1;

@@ -8,7 +8,7 @@
 
 <style>
   .progress {
-    background-color: #34495e;
+    --background-color: #34495e;
     border-radius: 10px;
     overflow: hidden;
     height: 15px;
@@ -16,7 +16,7 @@
   }
 
   .progress-bar {
-    background-color: #1abc9c;
+    --background-color: #1abc9c;
     height: 100%;
     color: #fff;
     text-align: center;

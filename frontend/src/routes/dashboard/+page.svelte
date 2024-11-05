@@ -20,7 +20,7 @@
     <h1 class="text-4xl lg:text-6xl font-bold">Good morning!</h1>
 
     <!-- Notifications -->
-    <div class="mt-6 lg:mt-10">
+    <div class="mt-6 lg:mt-10 bg-white">
       <h2 class="text-xl font-bold mb-4 text-gray-900 dark:text-gray-100">Notifications</h2>
       <div class="space-y-4">
         {#each notifications as notification}

@@ -35,7 +35,6 @@
     margin: 0;
     padding: 0;
     font-family: Arial, sans-serif;
-    background-color: #2c3e50; /* Match navbar background */
     color: white;
     height: 100vh;
   }
@@ -55,7 +54,7 @@
   }
 
   .report-container {
-    background: rgba(38, 92, 145, 0.8); /* Similar to navbar buttons */
+    --background: var(--background-color); /* Similar to navbar buttons */
     padding: 2rem;
     border-radius: 8px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
@@ -78,10 +77,10 @@
 
   .summary-table th,
   .summary-table td {
-    border: 1px solid #34495e; /* Match navbar button background */
+    border: 1px solid var(--color); /* Match navbar button background */
     padding: 0.75rem;
     color: white;
-    background: #34495e; /* Match navbar button background */
+    background: var(--color); /* Match navbar button background */
   }
 
   .export-controls {
@@ -93,7 +92,7 @@
     padding: 0.75rem;
     border: none;
     border-radius: 4px;
-    background: #34495e; /* Match navbar button background */
+    background: var(--color); /* Match navbar button background */
     color: white;
   }
 
@@ -109,14 +108,14 @@
   }
 
   .export-button:hover {
-    background: #16a085; /* Slightly darker for hover effect */
+    background: white; /* Slightly darker for hover effect */
   }
 </style>
 
 <main class="{isOpen ? 'main-expanded' : 'main-collapsed'} wrapper">
   <h1>Reports</h1> <!-- Main title outside the report container -->
   
-  <div class="report-container">
+  <div class="report-container bg-white">
     <h2>Summary Table</h2>
     <table class="summary-table">
       <thead>

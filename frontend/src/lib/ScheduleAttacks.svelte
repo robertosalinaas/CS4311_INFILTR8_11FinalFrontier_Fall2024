@@ -37,7 +37,7 @@
   select {
     width: 100%;
     padding: 10px;
-    background-color: #34495e; /* Match navbar background */
+    --background-color: var(--background-color); /* Match navbar background */
     color: white;
     border-radius: 4px;
     border: none;
@@ -46,6 +46,6 @@
   }
 
   select:hover {
-    background-color: #1abc9c; /* Match navbar hover */
+    --background-color: #1abc9c; /* Match navbar hover */
   }
 </style>
