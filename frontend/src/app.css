@@ -18,7 +18,7 @@
 
 .text-gray-700 {
   --tw-text-opacity: 1;
-  color: black; /* Default gray text */
+  color: white; /* Default gray text */
 }
 
 .border-gray-300 {
@@ -27,8 +27,8 @@
 }
 
 button {
-  background-color: turquoise; /* Default button background */
-  color: black; /* Black text for buttons in normal mode */
+  background-color: black; /* Default button background */
+  color: white; /* Black text for buttons in normal mode */
 }
 
 /* Custom Dark Mode Styles */
