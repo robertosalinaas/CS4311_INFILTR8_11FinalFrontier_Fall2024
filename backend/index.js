@@ -81,7 +81,7 @@ app.post('/upload', upload.single('file'), async (req, res) => {
 
   const filePath = path.join(__dirname, 'nessus_datasets', req.file.filename);
   const pythonScriptPath = path.join(__dirname, 'process_nessus.py');
-  const exploitOutputPath = path.join(__dirname, 'Process_5', 'exploits.json');
+  const csvDirectoryPath = path.join(__dirname, 'Process_5');
 
   try {
     // 1. Create or get the project
@@ -92,29 +92,27 @@ app.post('/upload', upload.single('file'), async (req, res) => {
     pythonProcess.on('close', async (code) => {
       if (code !== 0) return res.status(500).send('Error processing file');
 
-      // 3. Read exploit data from the generated JSON file
-      const exploitData = JSON.parse(fs.readFileSync(exploitOutputPath, 'utf8'));
-      for (const exploit of exploitData) {
-        await session.run(
-          'MATCH (p:Project {name: $projectName}) ' +
-          'MERGE (e:Exploit {name: $name}) ' +
-          'MERGE (p)-[:HAS_AVAILABLE_EXPLOIT]->(e)',
-          { projectName, name: exploit.name }
-        );
-      }
+      // 3. Read CSV files from the output directory
+      fs.readdir(csvDirectoryPath, (err, files) => {
+        if (err) {
+          console.error('Error reading CSV directory:', err);
+          return res.status(500).send('Error reading CSV files');
+        }
 
-      const csvFiles = files.filter((file) => file.endsWith('.csv'));
-      res.json({
-        filename: req.file.filename,
-        message: 'File uploaded and processed successfully',
-        csvFiles: csvFiles,
-      });    
+        const csvFiles = files.filter((file) => file.endsWith('.csv'));
+        res.json({
+          filename: req.file.filename,
+          message: 'File uploaded and processed successfully',
+          csvFiles: csvFiles,
+        });
+      });
     });
   } catch (error) {
     console.error('Error in upload:', error);
     res.status(500).send('Error in upload process');
   }
 });
+
 
 
 // Route to download CSV files
