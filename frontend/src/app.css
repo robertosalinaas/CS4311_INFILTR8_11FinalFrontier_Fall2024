@@ -6,14 +6,14 @@
 /* Normal (Default) Styles */
 :root {
   --tw-bg-opacity: 1;
-  background-color: white; /* Default background */
+  background-color: #265c91cc; /* Default background */
   --tw-text-opacity: 1;
   color: #1f2937; /* Default text color */
 }
 
 .bg-white {
   --tw-bg-opacity: 1;
-  background-color: #395068; /* White background for normal mode */
+  background-color: #058269; /* White background for normal mode */
 }
 
 .text-gray-700 {
@@ -23,11 +23,11 @@
 
 .border-gray-300 {
   --tw-border-opacity: 1;
-  border-color: gray; /* Default border color */
+  border-color: black; /* Default border color */
 }
 
 button {
-  background-color: #34495e; /* Default button background */
+  background-color: #265c91cc; /* Default button background */
   color: white; /* Black text for buttons in normal mode */
 }
 
@@ -56,6 +56,7 @@ button {
 }
 
 /* Custom Color Blindness Styles */
+/* Grayscale */
 :root.color-grayscale {
   --tw-bg-opacity: 1;
   --tw-text-opacity: 1;
@@ -64,21 +65,22 @@ button {
 }
 :root.color-grayscale .bg-white {
   --tw-bg-opacity: 1;
-  background-color: grey; /* Light gray for white elements in grayscale mode */
+  background-color: #626262; /* Light gray for white elements in grayscale mode */
 }
-:root.color-deuteranopia button {
-  background-color: black; /* Grayscale button background */
-  color: gray;
+:root.color-grayscale button {
+  background-color: #727272; /* Grayscale button background */
+  color: whitesmoke;
 }
-:root.color-deuteranopia .text-gray-700 {
+:root.color-grayscale .text-gray-700 {
   --tw-text-opacity: 1;
-  color: gray; /* Lighter text for grayscale mode */
+  color: whitesmoke; /* Lighter text for grayscale mode */
 }
-:root.color-deuteranopia .border-gray-300 {
+:root.color-grayscale .border-gray-300 {
   --tw-border-opacity: 1;
   border-color:black; /* Darker border for grayscale mode */
 }
 
+/* Deuteranopia */
 :root.color-deuteranopia {
   --tw-bg-opacity: 1;
   --tw-text-opacity: 1;
@@ -102,7 +104,7 @@ button {
   border-color: black; /* Darker border for deuteranopia */
 }
 
-/* Protanopia (using the correct colors) */
+/* Protanopia */
 :root.color-protanopia {
   --tw-bg-opacity: 1;
   --tw-text-opacity: 1;
@@ -126,7 +128,7 @@ button {
   border-color: black; /* Darker border for protanopia */
 }
 
-/* Tritanopia (using the correct colors) */
+/* Tritanopia */
 :root.color-tritanopia {
   --tw-bg-opacity: 1;
   --tw-text-opacity: 1;
