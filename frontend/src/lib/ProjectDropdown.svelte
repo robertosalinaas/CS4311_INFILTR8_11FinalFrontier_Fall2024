@@ -17,13 +17,13 @@
     border-radius: 5px;
     width: 100%;
     margin-bottom: 20px;
-    background-color: #34495e; 
-    color: white;
+    --background-color: #34495e; 
+    color: var(--background-color);
     border: none;
     transition: background-color 0.3s ease;
   }
 
   .dropdown select:hover {
-    background-color: #1abc9c; 
+    --background-color: var(--color); 
   }
 </style>

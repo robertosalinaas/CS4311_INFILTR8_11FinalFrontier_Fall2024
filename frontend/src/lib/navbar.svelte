@@ -15,7 +15,7 @@
     left: 0;
     height: 100%;
     width: 250px;
-    background-color: #2c3e50;
+    --background-color: #2c3e50;
     color: white;
     display: flex;
     flex-direction: column;
@@ -34,7 +34,7 @@
     font-size: 1.8rem;
     font-weight: bold;
     text-align: center;
-    background-color: #34495e;
+    --background-color: #34495e;
   }
 
   .nav-buttons, .bottom-buttons {
@@ -46,7 +46,7 @@
   .nav-buttons button, .bottom-buttons button {
     margin: 0.5rem 0;
     padding: 0.75rem;
-    background-color: #34495e;
+    --background-color: #34495e;
     color: white;
     border: none;
     cursor: pointer;
@@ -55,7 +55,7 @@
   }
 
   .nav-buttons button:hover, .bottom-buttons button:hover {
-    background-color: #1abc9c;
+    --background-color: #1abc9c;
   }
 
   /* Toggle Button Styles (Semicircle) */
@@ -65,7 +65,7 @@
     right: -2.3rem;
     width: 50px;
     height: 25px; /* Half height of the button for semicircle effect */
-    background-color: #2c3e50;
+    --background-color: #2c3e50;
     color: white;
     border: none;
     cursor: pointer;
@@ -81,7 +81,7 @@
   }
 
   .toggle-button:hover {
-    background-color: #1abc9c;
+    --background-color: #1abc9c;
     transform: scale(1.1) rotate(90deg);
   }
 

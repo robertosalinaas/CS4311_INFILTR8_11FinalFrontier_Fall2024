@@ -1,4 +1,4 @@
-<div class="summary">
+<div class="summary bg-white">
   <h2>Summary</h2>
   <div class="status-list">
     <p>Currently Testing Weak password Attack...</p>
@@ -12,10 +12,10 @@
 
 <style>
   .summary {
-    background-color: #34495e; 
+    --background-color: var(--background-color);
     padding: 20px;
     border-radius: 10px;
-    color: white; 
+    color: var(--text-color);
     height: 100%;
     overflow-y: auto;
   }
@@ -27,6 +27,6 @@
 
   hr {
     border: none;
-    border-top: 1px solid #1abc9c; 
+    border-top: 1px solid var(--border-color);
   }
 </style>
