@@ -8,9 +8,9 @@ const createSettingsStore = () => {
     darkMode: 'off'
   };
 
+  // Check if we're in the browser and localStorage is available
   let initialSettings = defaultSettings;
 
-  // Check if we're in the browser and localStorage is available
   if (typeof window !== 'undefined' && localStorage) {
     initialSettings = {
       colorMode: localStorage.getItem('colorMode') || defaultSettings.colorMode,
@@ -21,18 +21,30 @@ const createSettingsStore = () => {
 
   const { subscribe, set, update } = writable(initialSettings);
 
+  // Apply changes to localStorage whenever settings are updated
+  const applyChanges = (newSettings) => {
+    if (typeof window !== 'undefined' && localStorage) {
+      localStorage.setItem('colorMode', newSettings.colorMode);
+      localStorage.setItem('textSize', newSettings.textSize);
+      localStorage.setItem('darkMode', newSettings.darkMode);
+    }
+  };
+
   return {
     subscribe,
     set,
-    update,
-    applyChanges: () => {
-      if (typeof window !== 'undefined' && localStorage) {
-        localStorage.setItem('colorMode', initialSettings.colorMode);
-        localStorage.setItem('textSize', initialSettings.textSize);
-        localStorage.setItem('darkMode', initialSettings.darkMode);
-      }
+    update: (fn) => {
+      update((currentSettings) => {
+        const updatedSettings = fn(currentSettings);
+        applyChanges(updatedSettings);
+        return updatedSettings;
+      });
     },
-    resetToDefault: () => set(defaultSettings)
+    applyChanges, // Expose applyChanges if needed elsewhere
+    resetToDefault: () => {
+      set(defaultSettings);
+      applyChanges(defaultSettings); // Reset localStorage to default as well
+    }
   };
 };
 

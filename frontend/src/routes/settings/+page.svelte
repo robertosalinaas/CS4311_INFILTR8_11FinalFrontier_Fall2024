@@ -2,17 +2,21 @@
   export let isOpen = true;
 
   import Navbar from '$lib/navbar.svelte';
+  import { onMount } from 'svelte';
   import { settingsStore } from '../../settingsStore';
 
-  // Subscribe to settingsStore for current settings
+  // Initialize default settings
   let settings = {
     colorMode: 'normal',
     textSize: 'medium',
     darkMode: 'off'
   };
 
-  settingsStore.subscribe(value => {
-    settings = value;
+  // Subscribe to settingsStore and apply settings
+  onMount(() => {
+    settingsStore.subscribe(value => {
+      settings = value;
+    });
   });
 
   // Apply settings by updating the store
@@ -23,6 +27,11 @@
       textSize: settings.textSize,
       darkMode: settings.darkMode
     }));
+
+    // Apply to localStorage
+    localStorage.setItem('colorMode', settings.colorMode);
+    localStorage.setItem('textSize', settings.textSize);
+    localStorage.setItem('darkMode', settings.darkMode);
   }
 
   // Reset settings to default by updating the store
@@ -32,6 +41,11 @@
       textSize: 'medium',
       darkMode: 'off'
     });
+
+    // Reset localStorage
+    localStorage.removeItem('colorMode');
+    localStorage.removeItem('textSize');
+    localStorage.removeItem('darkMode');
   }
 
   // Update dark mode toggle state based on color mode
