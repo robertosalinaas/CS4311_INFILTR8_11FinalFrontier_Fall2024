@@ -1,0 +1,131 @@
+<script>
+  import { onMount } from 'svelte';
+  import Navbar from '$lib/navbar.svelte';
+
+  let isOpen = true;
+  let file;
+  let projectName = '';
+  let uploadStatus = '';
+  let isUploading = false;
+  let generatedFiles = [];
+
+  async function handleFileUpload() {
+    if (!file || !projectName) {
+      uploadStatus = 'Please select a file and enter a project name.';
+      return;
+    }
+
+    isUploading = true;
+    uploadStatus = 'Uploading...';
+
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('projectName', projectName);
+
+    try {
+      const response = await fetch('http://localhost:3000/upload', { method: 'POST', body: formData });
+      if (!response.ok) throw new Error(`Failed to upload file: ${response.status}`);
+      
+      const result = await response.json();
+      uploadStatus = `File successfully for project: ${projectName}`;
+      generatedFiles = result.csvFiles || [];
+    } catch (error) {
+      console.error('Error uploading file:', error);
+      uploadStatus = `Error uploading file: ${error.message}`;
+    } finally {
+      isUploading = false;
+    }
+  }
+
+  function handleFileChange(event) {
+    file = event.target.files[0];
+  }
+
+  function downloadFile(filename) {
+    window.location.href = `http://localhost:3000/download/${filename}`;
+  }
+</script>
+
+<Navbar bind:isOpen />
+
+<main class="{isOpen ? 'main-expanded' : 'main-collapsed'} bg-gray-100 dark:bg-gray-900 min-h-screen transition-all duration-300">
+  <div class="container mx-auto px-4 py-8">
+    <h1 class="text-3xl font-bold mb-6 text-gray-800 dark:text-gray-100">Process File</h1>
+
+    <div class="bg-white dark:bg-gray-800 p-6 rounded-md shadow-md mb-8">
+      <h2 class="text-xl font-bold mb-4 text-gray-700 dark:text-gray-200">Create Project and Upload Nessus Dataset</h2>
+      
+      <div class="mb-4">
+        <input
+          type="text"
+          placeholder="Enter project name"
+          bind:value={projectName}
+          class="block w-full mb-4 p-2 text-sm border rounded bg-gray-50 dark:bg-gray-900 dark:text-gray-100"
+        />
+      </div>
+
+      <div class="mb-4">
+        <input
+          type="file"
+          accept=".nessus"
+          on:change={handleFileChange}
+          class="block w-full text-sm text-gray-500 dark:text-gray-400 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 dark:file:bg-blue-800 file:text-blue-700 dark:file:text-blue-300 hover:file:bg-blue-100 dark:hover:file:bg-blue-600"
+        />
+      </div>
+
+      <button
+        on:click={handleFileUpload}
+        disabled={isUploading}
+        class="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed dark:bg-blue-700 dark:hover:bg-blue-800"
+      >
+        {isUploading ? 'Uploading...' : 'Create Project and Upload'}
+      </button>
+
+      {#if uploadStatus}
+        <p class="mt-4 text-sm {uploadStatus.includes('Error') ? 'text-red-500 dark:text-red-400' : 'text-green-500 dark:text-green-400'}">
+          {uploadStatus}
+        </p>
+      {/if}
+    </div>
+
+    {#if generatedFiles.length > 0}
+      <div class="bg-white dark:bg-gray-800 p-6 rounded-md shadow-md">
+        <h2 class="text-xl font-bold mb-4 text-gray-700 dark:text-gray-200">Generated Files</h2>
+        <ul class="list-disc pl-5">
+          {#each generatedFiles as file}
+            <li class="mb-2">
+              <span class="text-sm font-medium text-gray-700 dark:text-gray-300">{file}</span>
+              <button
+                on:click={() => downloadFile(file)}
+                class="ml-4 text-blue-500 dark:text-blue-400 hover:underline"
+                title="Download file"
+              >
+                Download
+              </button>
+            </li>
+          {/each}
+        </ul>
+      </div>
+    {/if}
+  </div>
+</main>
+
+<style>
+  main {
+    transition: margin-left 0.3s ease;
+  }
+
+  .main-collapsed {
+    margin-left: 0;
+  }
+
+  .main-expanded {
+    margin-left: 250px;
+  }
+
+  @media (max-width: 1024px) {
+    .main-expanded {
+      margin-left: 0;
+    }
+  }
+</style>

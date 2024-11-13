@@ -1,0 +1,153 @@
+/* app.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Normal (Default) Styles */
+:root {
+  --tw-bg-opacity: 1;
+  background-color: #265c91cc; /* Default background */
+  --tw-text-opacity: 1;
+  color: #1f2937; /* Default text color */
+}
+
+.bg-white {
+  --tw-bg-opacity: 1;
+  background-color: #058269; /* White background for normal mode */
+}
+
+.text-gray-700 {
+  --tw-text-opacity: 1;
+  color: white; /* Default gray text */
+}
+
+.border-gray-300 {
+  --tw-border-opacity: 1;
+  border-color: black; /* Default border color */
+}
+
+button {
+  background-color: #265c91cc; /* Default button background */
+  color: white; /* Black text for buttons in normal mode */
+}
+
+/* Custom Dark Mode Styles */
+:root.dark {
+  --tw-bg-opacity: 1;
+  background-color: rgba(26, 32, 44, var(--tw-bg-opacity)); /* Dark background */
+  --tw-text-opacity: 1;
+  color: rgba(203, 213, 224, var(--tw-text-opacity)); /* Light text in dark mode */
+}
+:root.dark .bg-white {
+  --tw-bg-opacity: 1;
+  background-color: rgba(45, 55, 72, var(--tw-bg-opacity)); /* Darker background for white elements */
+}
+:root.dark .text-gray-700 {
+  --tw-text-opacity: 1;
+  color: rgba(226, 232, 240, var(--tw-text-opacity)); /* Lighter text in dark mode */
+}
+:root.dark .border-gray-300 {
+  --tw-border-opacity: 1;
+  border-color: rgba(74, 85, 104, var(--tw-border-opacity)); /* Darker border in dark mode */
+}
+:root.dark button {
+  background-color: #4a5568; /* Darker button background */
+  color: white; /* White text for buttons in dark mode */
+}
+
+/* Custom Color Blindness Styles */
+/* Grayscale */
+:root.color-grayscale {
+  --tw-bg-opacity: 1;
+  --tw-text-opacity: 1;
+  background-color: gray; /* Gray background for grayscale mode */
+  color: black; /* Black text for better contrast */
+}
+:root.color-grayscale .bg-white {
+  --tw-bg-opacity: 1;
+  background-color: #626262; /* Light gray for white elements in grayscale mode */
+}
+:root.color-grayscale button {
+  background-color: #727272; /* Grayscale button background */
+  color: whitesmoke;
+}
+:root.color-grayscale .text-gray-700 {
+  --tw-text-opacity: 1;
+  color: whitesmoke; /* Lighter text for grayscale mode */
+}
+:root.color-grayscale .border-gray-300 {
+  --tw-border-opacity: 1;
+  border-color:black; /* Darker border for grayscale mode */
+}
+
+/* Deuteranopia */
+:root.color-deuteranopia {
+  --tw-bg-opacity: 1;
+  --tw-text-opacity: 1;
+  background-color: #e1daae; /* Adjusted background for deuteranopia */
+  color: #2d3142; /* Ensure text is readable */
+}
+:root.color-deuteranopia .bg-white {
+  --tw-bg-opacity: 1;
+  background-color: #058ed9; /* Adjusted white elements for deuteranopia */
+}
+:root.color-deuteranopia button {
+  background-color: #ff934f; /* Deuteranopia button background */
+  color: #cc2d35;
+}
+:root.color-deuteranopia .text-gray-700 {
+  --tw-text-opacity: 1;
+  color: #2d3142; /* Lighter text for deuteranopia */
+}
+:root.color-deuteranopia .border-gray-300 {
+  --tw-border-opacity: 1;
+  border-color: black; /* Darker border for deuteranopia */
+}
+
+/* Protanopia */
+:root.color-protanopia {
+  --tw-bg-opacity: 1;
+  --tw-text-opacity: 1;
+  background-color: #e8f086; /* Adjusted background for protanopia */
+  color: #235fa4; /* Ensure text is readable */
+}
+:root.color-protanopia .bg-white {
+  --tw-bg-opacity: 1;
+  background-color: #a691ae; /* Adjusted white elements for protanopia */
+}
+:root.color-protanopia button {
+  background-color: #6fde6e; /* Protanopia button background */
+  color: #ff4242;
+}
+:root.color-protanopia .text-gray-700 {
+  --tw-text-opacity: 1;
+  color: #235fa4; /* Lighter text for protanopia */
+}
+:root.color-protanopia .border-gray-300 {
+  --tw-border-opacity: 1;
+  border-color: black; /* Darker border for protanopia */
+}
+
+/* Tritanopia */
+:root.color-tritanopia {
+  --tw-bg-opacity: 1;
+  --tw-text-opacity: 1;
+  background-color: #dd4444; /* Adjusted background for tritanopia */
+  color: #194b4f; /* Ensure text is readable */
+}
+:root.color-tritanopia .bg-white {
+  --tw-bg-opacity: 1;
+  background-color: #2d676f; /* Adjusted white elements for tritanopia */
+}
+:root.color-tritanopia button {
+  background-color: #f48080; /* Tritanopia button background */
+  color: #194b4f;
+}
+:root.color-tritanopia .text-gray-700 {
+  --tw-text-opacity: 1;
+  color: #ffdcdc; /* Lighter text for tritanopia */
+}
+:root.color-tritanopia .border-gray-300 {
+  --tw-border-opacity: 1;
+  border-color: black; /* Darker border for tritanopia */
+}
