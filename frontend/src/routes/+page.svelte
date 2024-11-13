@@ -1,1 +1,8 @@
-<h1>Welcome to my SvelteKit app</h1>
+<script lang="ts">
+    import { onMount } from 'svelte';
+    import { goto } from '$app/navigation';
+
+    onMount(() => {
+        goto('/home');
+    });
+</script>

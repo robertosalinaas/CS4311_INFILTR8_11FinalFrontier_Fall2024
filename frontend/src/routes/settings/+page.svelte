@@ -1,126 +1,238 @@
 <script lang="ts">
-  export let isOpen = true;
+    import { onMount } from 'svelte';
+    import Navbar from '$lib/navbar.svelte';
+    import { settings } from '$lib/stores/settings';
 
-  import Navbar from '$lib/navbar.svelte';
-  import { onMount } from 'svelte';
-  import { settingsStore } from '../../settingsStore';
+    export let isOpen = true;
 
-  // Initialize default settings
-  let settings = {
-    colorMode: 'normal',
-    textSize: 'medium',
-    darkMode: 'off'
-  };
+    // Apply text size to document root when it changes
+    $: if (typeof window !== 'undefined') {
+        document.documentElement.style.fontSize = `${$settings.textSize}px`;
+    }
 
-  // Subscribe to settingsStore and apply settings
-  onMount(() => {
-    settingsStore.subscribe(value => {
-      settings = value;
-    });
-  });
-
-  // Apply settings by updating the store
-  function applyChanges() {
-    settingsStore.update(prev => ({
-      ...prev,
-      colorMode: settings.colorMode,
-      textSize: settings.textSize,
-      darkMode: settings.darkMode
-    }));
-
-    // Apply to localStorage
-    localStorage.setItem('colorMode', settings.colorMode);
-    localStorage.setItem('textSize', settings.textSize);
-    localStorage.setItem('darkMode', settings.darkMode);
-  }
-
-  // Reset settings to default by updating the store
-  function resetToDefault() {
-    settingsStore.set({
-      colorMode: 'normal',
-      textSize: 'medium',
-      darkMode: 'off'
-    });
-
-    // Reset localStorage
-    localStorage.removeItem('colorMode');
-    localStorage.removeItem('textSize');
-    localStorage.removeItem('darkMode');
-  }
-
-  // Update dark mode toggle state based on color mode
-  $: isDarkModeDisabled = settings.colorMode !== 'normal';
+    // Theme-specific classes
+    $: themeClasses = {
+        container: $settings.theme === 'light' 
+            ? 'bg-gray-100' 
+            : $settings.theme === 'dark' 
+                ? 'bg-gray-800' 
+                : 'bg-yellow-50',
+        card: $settings.theme === 'light'
+            ? 'bg-white'
+            : $settings.theme === 'dark'
+                ? 'bg-gray-900'
+                : 'bg-yellow-100',
+        text: $settings.theme === 'light'
+            ? 'text-gray-800'
+            : $settings.theme === 'dark'
+                ? 'text-gray-100'
+                : 'text-gray-900',
+        subtext: $settings.theme === 'light'
+            ? 'text-gray-600'
+            : $settings.theme === 'dark'
+                ? 'text-gray-400'
+                : 'text-gray-700',
+        border: $settings.theme === 'light'
+            ? 'border-gray-200'
+            : $settings.theme === 'dark'
+                ? 'border-gray-700'
+                : 'border-yellow-200'
+    };
 </script>
 
 <Navbar bind:isOpen />
 
-<main class={`p-6 ${isOpen ? 'main-expanded' : 'main-collapsed'}`}>
-  <div class="flex justify-center">
-    <h1 class="text-2xl font-bold mb-6 text-center dark:text-gray-200">Settings</h1>
-  </div>
+<div class="p-6 {isOpen ? 'main-expanded' : 'main-collapsed'} min-h-screen transition-all duration-500 ease-in-out {themeClasses.container}">
+    <div class="max-w-4xl mx-auto">
+        <!-- Settings Header -->
+        <div class="mb-8">
+            <h1 class="text-4xl font-bold {themeClasses.text}">Settings</h1>
+            <p class="{themeClasses.subtext} mt-2">Customize your application experience</p>
+        </div>
 
-  <section class="bg-white shadow-md rounded-lg p-6 mb-6 dark:bg-gray-800">
-    <h2 class="text-xl font-semibold mb-4 dark:text-gray-200">Accessibility Options</h2>
+        <div class="grid gap-8">
+            <!-- Theme Settings -->
+            <div class="{themeClasses.card} rounded-xl shadow-lg p-8">
+                <h2 class="text-2xl font-semibold mb-6 {themeClasses.text}">
+                    Theme Preferences
+                </h2>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <!-- Light Theme -->
+                    <button
+                        class="relative p-6 rounded-xl border-2 transition-all duration-300 flex flex-col items-center gap-4
+                        {$settings.theme === 'light' 
+                            ? 'border-blue-500 bg-blue-50/50' 
+                            : themeClasses.border}"
+                        on:click={() => settings.setTheme('light')}
+                    >
+                        <div class="w-16 h-16 bg-white rounded-full flex items-center justify-center shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
+                            </svg>
+                        </div>
+                        <div class="text-center">
+                            <span class="block text-lg font-medium {themeClasses.text}">Light</span>
+                            <span class="text-sm {themeClasses.subtext}">Default theme</span>
+                        </div>
+                        {#if $settings.theme === 'light'}
+                            <div class="absolute top-3 right-3 text-blue-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                        {/if}
+                    </button>
 
-    <!-- Color Mode Selector -->
-    <div class="settings-option mb-4">
-      <label for="color-mode" class="block text-gray-700 mb-2 dark:text-gray-200">Color Mode:</label>
-      <select id="color-mode" bind:value={settings.colorMode} class="w-full p-2 border rounded-md text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700">
-        <option value="normal">Normal</option>
-        <option value="grayscale">Grayscale</option>
-        <option value="deuteranopia">Deuteranopia</option>
-        <option value="protanopia">Protanopia</option>
-        <option value="tritanopia">Tritanopia</option>
-      </select>
+                    <!-- Dark Theme -->
+                    <button
+                        class="relative p-6 rounded-xl border-2 transition-all duration-300 flex flex-col items-center gap-4
+                        {$settings.theme === 'dark' 
+                            ? 'border-blue-500 bg-gray-800/50' 
+                            : themeClasses.border}"
+                        on:click={() => settings.setTheme('dark')}
+                    >
+                        <div class="w-16 h-16 bg-gray-800 rounded-full flex items-center justify-center shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-200" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
+                            </svg>
+                        </div>
+                        <div class="text-center">
+                            <span class="block text-lg font-medium {themeClasses.text}">Dark</span>
+                            <span class="text-sm {themeClasses.subtext}">Easier on the eyes</span>
+                        </div>
+                        {#if $settings.theme === 'dark'}
+                            <div class="absolute top-3 right-3 text-blue-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                        {/if}
+                    </button>
+
+                    <!-- Colorblind Theme -->
+                    <button
+                        class="relative p-6 rounded-xl border-2 transition-all duration-300 flex flex-col items-center gap-4
+                        {$settings.theme === 'colorblind' 
+                            ? 'border-blue-500 bg-yellow-100/50' 
+                            : themeClasses.border}"
+                        on:click={() => settings.setTheme('colorblind')}
+                    >
+                        <div class="w-16 h-16 bg-yellow-200 rounded-full flex items-center justify-center shadow-md">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-gray-800" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
+                            </svg>
+                        </div>
+                        <div class="text-center">
+                            <span class="block text-lg font-medium {themeClasses.text}">Colorblind</span>
+                            <span class="text-sm {themeClasses.subtext}">High contrast mode</span>
+                        </div>
+                        {#if $settings.theme === 'colorblind'}
+                            <div class="absolute top-3 right-3 text-blue-500">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                                </svg>
+                            </div>
+                        {/if}
+                    </button>
+                </div>
+            </div>
+
+            <!-- Text Size Settings -->
+            <div class="{themeClasses.card} rounded-xl shadow-lg p-8">
+                <h2 class="text-2xl font-semibold mb-6 {themeClasses.text}">
+                    Text Size
+                </h2>
+                
+                <div class="space-y-6">
+                    <!-- Text Size Slider -->
+                    <div class="flex items-center gap-6">
+                        <span class="text-sm {themeClasses.subtext} w-8">Aa</span>
+                        <div class="flex-grow">
+                            <input 
+                                type="range" 
+                                min="12" 
+                                max="24" 
+                                step="1"
+                                bind:value={$settings.textSize}
+                                on:change={() => settings.setTextSize($settings.textSize)}
+                                class="w-full slider-custom"
+                            />
+                        </div>
+                        <span class="text-xl {themeClasses.subtext} w-8">Aa</span>
+                    </div>
+
+                    <!-- Preview Text -->
+                    <div class="p-6 rounded-lg {$settings.theme === 'light' ? 'bg-gray-50' : $settings.theme === 'dark' ? 'bg-gray-800/50' : 'bg-yellow-50'}">
+                        <h3 class="font-semibold mb-2 {themeClasses.text}" style="font-size: {$settings.textSize}px">
+                            Preview Text
+                        </h3>
+                        <p class={themeClasses.subtext} style="font-size: {$settings.textSize}px">
+                            This is how your text will look across the application. Adjust the slider to find the perfect size for your needs.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-    <!-- Text Size Selector -->
-    <div class="settings-option mb-4">
-      <label for="text-size" class="block text-gray-700 mb-2 dark:text-gray-200">Text Size:</label>
-      <select id="text-size" bind:value={settings.textSize} class="w-full p-2 border rounded-md text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700">
-        <option value="small">Small</option>
-        <option value="medium">Medium</option>
-        <option value="large">Large</option>
-      </select>
-    </div>
-
-    <!-- Dark Mode Selector -->
-    <div class="settings-option mb-4">
-      <label for="dark-mode" class="block text-gray-700 mb-2 dark:text-gray-200">Dark Mode:</label>
-      <select id="dark-mode" bind:value={settings.darkMode} class="w-full p-2 border rounded-md text-gray-700 dark:text-gray-200 border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-700" disabled={isDarkModeDisabled}>
-        <option value="off">Off</option>
-        <option value="on">On</option>
-      </select>
-    </div>
-
-    <!-- Apply and Reset Buttons -->
-    <div class="flex space-x-4">
-      <button on:click={applyChanges} class="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600 transition dark:bg-gray-700 dark:hover:bg-gray-600">
-        Apply
-      </button>
-      <button on:click={resetToDefault} class="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600 transition dark:bg-gray-600 dark:hover:bg-gray-500">
-        Reset to Default
-      </button>
-    </div>
-  </section>
-</main>
+</div>
 
 <style>
-  main {
-    transition: margin-left 0.3s ease;
-  }
-
-  .main-collapsed {
-    margin-left: 0;
-  }
-
-  .main-expanded {
-    margin-left: 250px; /* Adjust this width based on your navbar width */
-  }
-
-  @media (max-width: 1024px) {
-    .main-expanded {
-      margin-left: 0;
+    :global(.main-expanded) {
+        margin-left: 250px;
     }
-  }
+
+    :global(.main-collapsed) {
+        margin-left: 0;
+    }
+
+    @media (max-width: 768px) {
+        :global(.main-expanded) {
+            margin-left: 0;
+        }
+    }
+
+    /* Custom slider styling */
+    .slider-custom {
+        -webkit-appearance: none;
+        appearance: none;
+        height: 8px;
+        border-radius: 8px;
+        background: #e2e8f0;
+        outline: none;
+    }
+
+    .slider-custom::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #3b82f6;
+        cursor: pointer;
+        border: 2px solid white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+    }
+
+    .slider-custom::-webkit-slider-thumb:hover {
+        background: #2563eb;
+        transform: scale(1.1);
+    }
+
+    .slider-custom::-moz-range-thumb {
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        background: #3b82f6;
+        cursor: pointer;
+        border: 2px solid white;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+    }
+
+    .slider-custom::-moz-range-thumb:hover {
+        background: #2563eb;
+        transform: scale(1.1);
+    }
 </style>
