@@ -1,51 +1,47 @@
 import { writable } from 'svelte/store';
 
-// Define types
-export type Theme = 'light' | 'dark' | 'colorblind';
-
 interface Settings {
-    theme: Theme;
+    theme: 'light' | 'dark';
     textSize: number;
 }
 
-// Create the store with default values
+// Get initial theme from localStorage or default to 'light'
+const getInitialTheme = () => {
+    if (typeof window !== 'undefined') {
+        return localStorage.getItem('theme') as 'light' | 'dark' || 'light';
+    }
+    return 'light';
+};
+
 function createSettingsStore() {
-    const defaultSettings: Settings = {
-        theme: 'light',
+    const { subscribe, set, update } = writable<Settings>({
+        theme: getInitialTheme(),
         textSize: 16
-    };
-
-    // Load saved settings from localStorage
-    const loadSettings = (): Settings => {
-        if (typeof window === 'undefined') return defaultSettings;
-        
-        const savedSettings = localStorage.getItem('userSettings');
-        return savedSettings ? JSON.parse(savedSettings) : defaultSettings;
-    };
-
-    const { subscribe, set, update } = writable<Settings>(loadSettings());
+    });
 
     return {
         subscribe,
-        setTheme: (theme: Theme) => {
-            update(settings => {
-                const newSettings = { ...settings, theme };
-                localStorage.setItem('userSettings', JSON.stringify(newSettings));
-                return newSettings;
-            });
+        setTheme: (theme: 'light' | 'dark') => {
+            if (typeof window !== 'undefined') {
+                localStorage.setItem('theme', theme);
+                document.documentElement.style.backgroundColor = theme === 'dark' ? '#000000' : '#ffffff';
+            }
+            update(settings => ({ ...settings, theme }));
         },
-        setTextSize: (size: number) => {
-            update(settings => {
-                const newSettings = { ...settings, textSize: size };
-                localStorage.setItem('userSettings', JSON.stringify(newSettings));
-                return newSettings;
-            });
-        },
+        setTextSize: (size: number) => update(settings => ({ ...settings, textSize: size })),
         reset: () => {
-            set(defaultSettings);
-            localStorage.setItem('userSettings', JSON.stringify(defaultSettings));
+            if (typeof window !== 'undefined') {
+                localStorage.setItem('theme', 'light');
+                document.documentElement.style.backgroundColor = '#ffffff';
+            }
+            set({ theme: 'light', textSize: 16 });
         }
     };
 }
 
 export const settings = createSettingsStore();
+
+// Initialize background color on page load
+if (typeof window !== 'undefined') {
+    document.documentElement.style.backgroundColor = getInitialTheme() === 'dark' ? '#000000' : '#ffffff';
+}

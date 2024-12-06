@@ -21,6 +21,9 @@
 		"vite": "^5.0.3"
 	},
 	"dependencies": {
-		"svelte-dnd-action": "^0.9.52"
+		"@types/papaparse": "^5.3.15",
+		"papaparse": "^5.4.1",
+		"svelte-dnd-action": "^0.9.52",
+		"svelte-table": "^0.6.3"
 	}
 }
