@@ -132,6 +132,9 @@ The following instructions assume you are running Kali Linux on an Intel machine
 
        http://localhost:5173/
 
+5. **DEMO VIDEO LINK YOUTUBE**
+    https://youtu.be/ijx5CJB7IYI
+
 ### Additional Notes
 
 - **Credentials**: If authentication is required, ensure you have the proper credentials. These may be set up in the backend environment or provided by your deployment configuration.
