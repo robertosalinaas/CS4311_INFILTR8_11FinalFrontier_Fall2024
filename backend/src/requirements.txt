@@ -1,0 +1,4 @@
+pandas
+category_encoders
+scikit-learn
+reportlab
