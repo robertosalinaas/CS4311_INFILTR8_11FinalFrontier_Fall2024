@@ -17,6 +17,8 @@ interface CreatePdfRequest {
 }
 
 const create_pdf = async (req: Request<{}, any, CreatePdfRequest>, res: Response, next: NextFunction): Promise<void> => {
+    const tempFiles: string[] = [];
+    
     try {
         const { csvData } = req.body;
         const user = req.user;
@@ -41,15 +43,28 @@ const create_pdf = async (req: Request<{}, any, CreatePdfRequest>, res: Response
             fs.mkdirSync(tempDir, { recursive: true });
         }
 
-        const outputFile = path.join(tempDir, `report_${Date.now()}.pdf`);
+        // Create temporary CSV files
+        const timestamp = Date.now();
+        const tempCsvFiles = {
+            data_with_exploits: path.join(tempDir, `data_with_exploits_${timestamp}.csv`),
+            ranked_entry_points: path.join(tempDir, `ranked_entry_points_${timestamp}.csv`),
+            entrypoint_most_info: path.join(tempDir, `entrypoint_most_info_${timestamp}.csv`),
+            port_0_entries: path.join(tempDir, `port_0_entries_${timestamp}.csv`)
+        };
+
+        // Write CSV data to temporary files
+        for (const [key, filePath] of Object.entries(tempCsvFiles)) {
+            fs.writeFileSync(filePath, csvData[key as keyof typeof csvData]);
+            tempFiles.push(filePath);
+        }
+
+        const outputFile = path.join(tempDir, `report_${timestamp}.pdf`);
         const scriptPath = path.join(__dirname, '../scripts/merge_csv.py');
 
-        // Pass CSV data as JSON string
-        const csvDataJson = JSON.stringify(csvData);
-
+        // Pass file paths to Python script
         const pythonProcess = spawn('python', [
             scriptPath,
-            csvDataJson,
+            JSON.stringify(tempCsvFiles),
             outputFile
         ]);
 
@@ -59,6 +74,14 @@ const create_pdf = async (req: Request<{}, any, CreatePdfRequest>, res: Response
 
         pythonProcess.on('error', (error) => {
             console.error('Failed to start Python process:', error);
+            // Clean up temp files on error
+            tempFiles.forEach(file => {
+                try {
+                    fs.unlinkSync(file);
+                } catch (err) {
+                    console.error('Error deleting temporary file:', err);
+                }
+            });
             if (!res.headersSent) {
                 res.status(500).json({
                     error: 'Failed to create PDF report'
@@ -67,6 +90,15 @@ const create_pdf = async (req: Request<{}, any, CreatePdfRequest>, res: Response
         });
 
         pythonProcess.on('close', (code) => {
+            // Clean up temporary CSV files
+            tempFiles.forEach(file => {
+                try {
+                    fs.unlinkSync(file);
+                } catch (err) {
+                    console.error('Error deleting temporary file:', err);
+                }
+            });
+
             if (code !== 0) {
                 if (!res.headersSent) {
                     res.status(500).json({
@@ -113,6 +145,15 @@ const create_pdf = async (req: Request<{}, any, CreatePdfRequest>, res: Response
         });
 
     } catch (error) {
+        // Clean up temporary files in case of error
+        tempFiles.forEach(file => {
+            try {
+                fs.unlinkSync(file);
+            } catch (err) {
+                console.error('Error deleting temporary file:', err);
+            }
+        });
+
         if (!res.headersSent) {
             if (error instanceof Error) {
                 res.status(500).json({
